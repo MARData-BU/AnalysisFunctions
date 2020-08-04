@@ -29,4 +29,9 @@ Create excel
 #'
 #' MAKE.EXCEL(fileinput = "Data4Tyers.rds", contrast, pvalue , padj = NULL, FC )
 
+  
+  ########################## LIMITATIONS ###########################
+  #' - Contrast has to be <= 25 characters (EX: pos_MV.tr.vs.neg_MV.no.tr) 
+  #' - Contrast has no to include "FC". (EX: pos_FC.vs.neg_FC) 
+  #' - 20 possible contrasts (you can include more colors in colors4stats if you want to perform more than 20) 
 }
