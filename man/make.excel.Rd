@@ -21,10 +21,10 @@ Create excel
 ?
 #' contrast <- list(c("PyMT_WT", "PyMT_LysMCre"), c("PyMT_WT", "KO_WT"))
 #' fileinput <- "data4Tyers.rds"
-#' filename <- ""20200526_Excel_EGonzalez_MCiscar.xlsx"
+#' filename <- "ProjectRNASeq.xlsx"
 #' pvalue <- 0.05
 #' FC <- 1
-#' pathinput <- "/bicoh/MARGenomics/20200526_EGonzalez_MCiscar/Analysis/Results"
+#' pathinput <- "/bicoh/MARGenomics/Projecte/Analysis/Results"
 #'
 #'
 #' MAKE.EXCEL(fileinput = "Data4Tyers.rds", contrast, pvalue , padj = NULL, FC )
