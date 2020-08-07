@@ -17,5 +17,6 @@ Package with basic analysis functions for genomic data.
 - **GSEA_report_MS**: Function to make the report of GSEA based on mouse symbols
 - **GSEA_report_ENSEMBL**: Function to make the report of GSEA based on ENSEMBL IDs
 - **GSEA_genes_Report**: Function to make the report of GSEA sumarized by gene
+- **make.excel**: Function to make the excel of results from data4tyers file.
 
 
