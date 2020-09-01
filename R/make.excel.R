@@ -4,6 +4,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   require(openxlsx)
   require(grDevices)
   ## Read Data
+  message("Read RDS file ...")
   muestra<-readRDS(file=file.path(pathinput, fileinput))
   # Change GO columns to eliminate the space at the beginning
   if ("GO.BP" %in% colnames(muestra)){
@@ -25,6 +26,8 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   
   
   ########### FILTER ############
+  
+  message("Filter ...")
   if (length(contrast) <= 1){  # We have to separate one contrast from two or more
     if (is.null(pvalue)){ #pvalue = NULL
       muestra.filter.adj<-muestra[,grep(colnames(muestra),pattern="adj.P.Val",fixed = TRUE)]
@@ -98,6 +101,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     }
   }
   
+  message("Style ...")
   
   sheet.num <- length(contrast)+1
   # For all sheets 
@@ -121,15 +125,19 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     
     NumberStyle <- createStyle( fontSize = 4, numFmt = "0.00")
     
+    NumberStyle_adj.pval <- createStyle (fontSize = 4, numFmt = "SCIENTIFIC")
+    
     number.col <- ncol(muestra) - dim(color.values)[2]
     FCcols <- grep("FC", colnames(muestra))
     meanCols <- grep("mean", colnames(muestra))
+    adjPvalCols <- grep("adj.P.Val", colnames(muestra))
     addStyle(wb, sheet = i, NumberStyle, rows = 2:nrow(muestra),
              cols = number.col : ncol(muestra), gridExpand = TRUE)
     addStyle(wb, sheet = i, NumberStyle, rows = 2:nrow(muestra),
              cols = FCcols, gridExpand = TRUE)
     addStyle(wb, sheet = i, NumberStyle, rows = 2:nrow(muestra),
              cols = meanCols, gridExpand = TRUE)
+    addStyle(wb, sheet = i , NumberStyle_adj.pval, rows = 2:nrow(muestra), cols = adjPvalCols, gridExpand = TRUE)
     # Set Heights and Widths
     setRowHeights(wb, sheet = i, rows = 1, heights = 50)
     setRowHeights(wb, sheet = i, rows = 2:nrow(muestra), heights = 8)
@@ -184,7 +192,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            sheet = i+1,
                            cols = stats[[i]],
                            rows = 1:(nrow(muestra)+1),
-                           rule = ".",
+                           rule = "",
                            style = createStyle(bgFill = colors4stats[i], fontSize = 4),
                            type = "contains"
     )# Colouring cols
@@ -207,7 +215,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            sheet = 1,
                            cols = stats[[i]],
                            rows = 1:(nrow(muestra)+1),
-                           rule = ".",
+                           rule = "",
                            style = createStyle(bgFill = colors4stats[i], fontSize = 4),
                            type = "contains"
     )# Colouring col
@@ -223,7 +231,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   }
   
   # Legend:
-  
+  message("Legend ...")
   addWorksheet(wb, sheetName = "Legend")
   a<-min(color.values)/5
   b<-max(color.values)/5
@@ -243,7 +251,6 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                          style = c("blue","white", "red"),
                          type = "colorScale"
   )
-  
-  saveWorkbook(wb, file.path(pathoutput,filename),overwrite = TRUE)
-  
+  saveWorkbook(wb, file.path(pathoutput,paste(filename, "xlsx", sep=".")),overwrite = TRUE)
+  message("The function was performed successful")
 }
