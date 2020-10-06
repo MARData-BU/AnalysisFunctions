@@ -115,7 +115,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     
     bodyStyle1 <- createStyle(fontSize = 4,
                               wrapText = TRUE, valign = "top", halign = "left")
-    addStyle(wb, sheet = i, bodyStyle1, rows = 2:length(rownames(muestra)),
+    addStyle(wb, sheet = i, bodyStyle1, rows = 2:(length(rownames(muestra))+1),
              cols = 1:length(colnames(muestra)), gridExpand = TRUE)
     
     headerStyle2 <- createStyle(fontSize = 4, valign = "center",textDecoration = "Bold",
@@ -131,16 +131,16 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     FCcols <- grep("FC", colnames(muestra))
     meanCols <- grep("mean", colnames(muestra))
     adjPvalCols <- grep("adj.P.Val", colnames(muestra))
-    addStyle(wb, sheet = i, NumberStyle, rows = 2:nrow(muestra),
+    addStyle(wb, sheet = i, NumberStyle, rows = 2:(nrow(muestra)+1),
              cols = number.col : ncol(muestra), gridExpand = TRUE)
-    addStyle(wb, sheet = i, NumberStyle, rows = 2:nrow(muestra),
+    addStyle(wb, sheet = i, NumberStyle, rows = 2:(nrow(muestra)+1),
              cols = FCcols, gridExpand = TRUE)
-    addStyle(wb, sheet = i, NumberStyle, rows = 2:nrow(muestra),
+    addStyle(wb, sheet = i, NumberStyle, rows = 2:(nrow(muestra)+1),
              cols = meanCols, gridExpand = TRUE)
-    addStyle(wb, sheet = i , NumberStyle_adj.pval, rows = 2:nrow(muestra), cols = adjPvalCols, gridExpand = TRUE)
+    addStyle(wb, sheet = i , NumberStyle_adj.pval, rows = 2:(nrow(muestra)+1), cols = adjPvalCols, gridExpand = TRUE)
     # Set Heights and Widths
     setRowHeights(wb, sheet = i, rows = 1, heights = 50)
-    setRowHeights(wb, sheet = i, rows = 2:nrow(muestra), heights = 8)
+    setRowHeights(wb, sheet = i, rows = 2:(nrow(muestra)+1), heights = 8)
     
     setColWidths(wb, sheet = i, cols = ncol(color.values):ncol(muestra), widths = 5)
     setColWidths(wb, sheet = i, cols = 1:ncol(color.values), widths = 0.50)
@@ -192,7 +192,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            sheet = i+1,
                            cols = stats[[i]],
                            rows = 1:(nrow(muestra)+1),
-                           rule = "",
+                           rule = ".",
                            style = createStyle(bgFill = colors4stats[i], fontSize = 4),
                            type = "contains"
     )# Colouring cols
@@ -200,7 +200,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            sheet = i+1,
                            cols = stats[[i]],
                            rows = 1,
-                           rule = "vs",
+                           rule = ".",
                            style = createStyle(bgFill = colors4stats[i], fontSize = 4),
                            type = "contains"
     )
@@ -215,7 +215,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            sheet = 1,
                            cols = stats[[i]],
                            rows = 1:(nrow(muestra)+1),
-                           rule = "",
+                           rule = ".",
                            style = createStyle(bgFill = colors4stats[i], fontSize = 4),
                            type = "contains"
     )# Colouring col
@@ -223,7 +223,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            sheet = 1,
                            cols = stats[[i]],
                            rows = 1,
-                           rule = "vs",
+                           rule = ".",
                            style = createStyle(bgFill = colors4stats[i], fontSize = 4),
                            type = "contains"
     )
