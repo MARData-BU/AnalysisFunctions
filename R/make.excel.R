@@ -29,39 +29,40 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   
   message("Filter ...")
   if (length(contrast) <= 1){  # We have to separate one contrast from two or more
-    if (is.null(pvalue)){ #pvalue = NULL
+    vector.adj = c()
+    vector.noadj = c()
+    if (is.null(pvalue)){ # Pvalue = NULL
       muestra.filter.adj<-muestra[,grep(colnames(muestra),pattern="adj.P.Val",fixed = TRUE)]
       logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
-      vector.adj = NULL
-      vector.noadj = NULL
-      for (x in 1:length(muestra.filter.adj)){ #for each value in muestra.filter.adj
-        if (muestra.filter.adj[x] < padj){ 
-          vector.adj <- c(vector.adj,muestra.filter.adj[x])
-        }else{
-          vector.noadj <- c(vector.noadj,muestra.filter.adj[x])
-        }
-      }
-      if (is.null(vector.adj)){ 
-        warning("No values < padj. PValue = 0.05 was used to filter data.")
+      if(!any(muestra.filter.adj < padj)){  
+        warning("PValue = 0.05 was used to filter data.")
         muestra.filter.pval<-muestra[,grep(colnames(muestra),pattern="P.Value",fixed = TRUE)]
         logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
         muestra.final <- muestra[which(muestra.filter.pval <= 0.05 & abs(logFC.col) > logFC ),]
-        muestra <- muestra.final
-      }else{ #if vector.adj != NULL
-        muestra.final <- muestra[which(muestra.filter.adj <= padj & abs(logFC.col) > logFC),]
-        muestra <- muestra.final
+          #order by FC columns
+        muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
+          # add new sheet
+        addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
+        writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
+      }else{ # if muestra.filter.adj < padj : 
+        warning("Padj = 0.05 was used to filter data.")
+        muestra.final <- muestra[which(muestra.filter.adj <= padj & abs(logFC.col) > 1),]
+          #order by FC columns
+        muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
+          # add new sheet
+        addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
+        writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
       }
     }else{ # if pvalue != NULL
       muestra.filter.pval<-muestra[,grep(colnames(muestra),pattern="P.Value",fixed = TRUE)]
       logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
-      muestra.final <- muestra[which(muestra.filter.pval <= pvalue & abs(logFC.col) > logFC ),]
-      muestra <- muestra.final
+      muestra.final <- muestra[which(muestra.filter.pval[1] <= pvalue & abs(logFC.col[1]) > logFC ),]
+        #order by FC columns
+      muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
+        # add new sheet
+      addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
+      writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
     }
-    #order by FC columns
-    muestra.f<-muestra[order(muestra[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
-    # Add new sheet
-    addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
-    writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
   }else{ #if length contrast > 1
     vector.adj = c()
     vector.noadj = c()
