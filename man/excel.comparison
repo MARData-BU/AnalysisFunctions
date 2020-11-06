@@ -18,9 +18,9 @@ excel.comparison(
 
 \item{pathoutput}{The pathway for the excel file output}
 
-\item{excelsUP}{The excels where funcional pathways are upregulated (posistive NES)}
+\item{excelsUP}{The excels where funcional pathways are upregulated (posistive NES).They must contain the contrast in the name of the file separated by "_". For instance: GSEA4563_WT_vs_CTRL_UP.xlsx}
 
-\item{excelsDOWN}{The excels where funcional pathways are downregulated (negative NES)}
+\item{excelsDOWN}{The excels where funcional pathways are downregulated (negative NES).They must contain the contrast in the name of the file separated by "_". For instance: GSEA4563_WT_vs_CTRL_DOWN.xlsx}
 
 \item{contrast}{The contrast used in functional analysis and it shows in excel files names}
 
@@ -39,11 +39,14 @@ Only for less than 5 comparison.
 
 pathinput <- "Name/home/Excels_GSEA"
 pathoutput <- "Name/home/Results"
-excelsUP <- c("Treatment1D.vs.Notreatment1D_UP.xlsx","Treatment14D.vs.Notreatment14D_UP.xlsx" )
-excelsDOWN <- c("Treatment1D.vs.Notreatment1D_DOWN.xlsx","Treatment14D.vs.Notreatment14D_DOWN.xlsx" )
+excelsUP <- c("Treatment1D_vs_Notreatment1D_UP.xlsx","Treatment14D_vs_Notreatment14D_UP.xlsx" )
+excelsDOWN <- c("Treatment1D_vs_Notreatment1D_DOWN.xlsx","Treatment14D_vs_Notreatment14D_DOWN.xlsx" )
 contrast <- c("Treatment1D.vs.Notreatment1D", "Treatment14D.vs.Notreatment14D")
 filename <- "GSEA_comparison_summary"
 
 comparisonFunction(pathinput = pathinput, pathoutput = pathoutput,excelsUP = excelsUP, excelsDOWN = excelsDOWN, contrast = contrast, filename = filename)
 
+LIMITATIONS:
+- Only for 5 contrasts. If we need more we have to add contrast inside the function
+- Only for a specific file names type for up and down regulated xlsx files  
 }
