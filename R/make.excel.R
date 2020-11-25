@@ -70,7 +70,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
       if (is.null(pvalue)){ # Pvalue = NULL
         muestra.filter.adj<-muestra[,grep(colnames(muestra),pattern="adj.P.Val",fixed = TRUE)]
         logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
-        if(!all(muestra.filter.adj > padj)){  
+        if(!any(muestra.filter.adj < padj)){  
           warning("PValue = 0.05 was used to filter data.")
           muestra.filter.pval<-muestra[,grep(colnames(muestra),pattern="P.Value",fixed = TRUE)]
           logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
