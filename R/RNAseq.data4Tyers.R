@@ -63,25 +63,40 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
       
     } else if (specie =="mouse") {
       annot.mat.complt <- Complete.Mouse.GO.nd.KEGG(annot.mat)
-      
     }
-    #Construim la matriu definitiva
-    data4Tyers<-data.frame(est_scaled, annot.mat.complt,
-                           topDiff.mat, mean.matrix,
-                           est_noctrls_s)
+
   } else {
-    #Construim la matriu definitiva
-    data4Tyers<-data.frame(est_scaled,annot.mat, topDiff.mat, mean.matrix,
-                           est_noctrls_s)
+    #Ordenem la matriu d'anotacions
+    annot.mat.complt <- annot.mat[match(rownames(est_scaled),annot.mat$Geneid),]
   }
   
-  #check if the order of the rows is the same and we can make merge with cbind
-  # all.equal(rownames(est_scaled), annot.mat.complt$Geneid)#TRUE
-  # all.equal(rownames(est_scaled), rownames(ConList[[1]]))#TRUE
-  # all.equal(rownames(est_scaled), rownames(ConList[[2]]))#TRUE
-  # all.equal(rownames(est_scaled), rownames(ConList[[3]]))#TRUE
-  # all.equal(rownames(est_scaled), rownames(mean.matrix))#TRUE
-  
-  return(data4Tyers)
-  
+  #Fem comprovacions abans de retornar l'objecte final
+  a=all.equal(rownames(est_scaled), rownames(est_noctrls_s))
+  b=all.equal(rownames(est_scaled), rownames(ConList[[1]]))
+  c=all.equal(rownames(est_scaled), rownames(mean.matrix))
+  d=all.equal(rownames(est_scaled), annot.mat.complt$Geneid)
+  tryCatch(
+    expr = {
+      a&b&c&d #Si esta tot en el mateix ordre
+      message("All objects are in same order. data4Tyers successfully created!")
+      
+      #Construim la matriu definitiva només si es compleix l'expressió de sobre
+      data4Tyers<-data.frame(est_scaled, annot.mat.complt,
+                             topDiff.mat, mean.matrix,
+                             est_noctrls_s)
+      return(data4Tyers)
+      
+    },
+    error = function(e){ #Si  a&b&c&d dona un error, salta el seguent missatge:
+      message('Something is not in the correct order. Plese check that all inputs have same length and Geneid:')
+      
+      message('all.equal(rownames(est_scaled), rownames(est_noctrls_s): ',a)
+      message('all.equal(rownames(est_scaled), rownames(ConList[[1]])): ',b)
+      message('all.equal(rownames(est_scaled), rownames(mean.matrix)): ',c)
+      message('all.equal(rownames(est_scaled), annot.mat.complt$Geneid): ',d)
+
+    }
+  ) 
+
+
 }
