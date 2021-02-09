@@ -140,7 +140,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
              cols = FCcols, gridExpand = TRUE)
     addStyle(wb, sheet = i, NumberStyle, rows = 2:(nrow(muestra)+1),
              cols = meanCols, gridExpand = TRUE)
-    addStyle(wb, sheet = i , NumberStyle_adj.pval, rows = 1:(nrow(muestra)+1), cols = adjPvalCols, gridExpand = TRUE)
+    addStyle(wb, sheet = i , NumberStyle_adj.pval, rows = 2:(nrow(muestra)+1), cols = adjPvalCols, gridExpand = TRUE)
     # Set Heights and Widths
     setRowHeights(wb, sheet = i, rows = 1, heights = 100)
     setRowHeights(wb, sheet = i, rows = 2:(nrow(muestra)+1), heights = 14)
