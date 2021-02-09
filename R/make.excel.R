@@ -1,6 +1,5 @@
 make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue = NULL,padj = 0.05, logFC = 1){
-  
-  
+
   require(openxlsx)
   require(grDevices)
   ## Read Data
@@ -22,6 +21,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   ## Create a new workbook
   wb <- createWorkbook()
   addWorksheet(wb, sheetName = "AllData")
+  
   writeData(wb, 1  , muestra)
   
   
@@ -39,27 +39,27 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
         muestra.filter.pval<-muestra[,grep(colnames(muestra),pattern="P.Value",fixed = TRUE)]
         logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
         muestra.final <- muestra[which(muestra.filter.pval <= 0.05 & abs(logFC.col) > logFC ),]
-          #order by FC columns
+        #order by FC columns
         muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
-          # add new sheet
+        # add new sheet
         addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
         writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
       }else{ # if muestra.filter.adj < padj : 
         warning("Padj = 0.05 was used to filter data.")
         muestra.final <- muestra[which(muestra.filter.adj <= padj & abs(logFC.col) > logFC),]
-          #order by FC columns
+        #order by FC columns
         muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
-          # add new sheet
+        # add new sheet
         addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
         writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
       }
     }else{ # if pvalue != NULL
       muestra.filter.pval<-muestra[,grep(colnames(muestra),pattern="P.Value",fixed = TRUE)]
       logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
-      muestra.final <- muestra[which(muestra.filter.pval[1] <= pvalue & abs(logFC.col[1]) > logFC ),]
-        #order by FC columns
+      muestra.final <- muestra[which(muestra.filter.pval <= pvalue & abs(logFC.col) > logFC ),]
+      #order by FC columns
       muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
-        # add new sheet
+      # add new sheet
       addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
       writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
     }
@@ -108,26 +108,28 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   # For all sheets 
   for (i in 1:sheet.num){
     # Create several styles for columns and rows
-    headerStyle1 <- createStyle(fontSize = 4,halign = "center",textDecoration = "Bold",
+    headerStyle1 <- createStyle(fontSize = 10,halign = "center",textDecoration = "Bold",
                                 wrapText = TRUE, textRotation = 90)
     
     addStyle(wb, sheet = i, headerStyle1, rows = 1, cols = 1:length(colnames(muestra)),
              gridExpand = TRUE)
     
-    bodyStyle1 <- createStyle(fontSize = 4,
+    bodyStyle1 <- createStyle(fontSize = 10,
                               wrapText = TRUE, valign = "top", halign = "left")
     addStyle(wb, sheet = i, bodyStyle1, rows = 2:(length(rownames(muestra))+1),
              cols = 1:length(colnames(muestra)), gridExpand = TRUE)
     
-    headerStyle2 <- createStyle(fontSize = 4, valign = "center",textDecoration = "Bold",
+    headerStyle2 <- createStyle(fontSize = 10, valign = "center",textDecoration = "Bold",
                                 wrapText = TRUE, textRotation = 90)
     addStyle(wb, sheet = i, headerStyle2, rows = 1,
              cols = 1:dim(color.values)[2], gridExpand = TRUE)
     
-    NumberStyle <- createStyle( fontSize = 4, numFmt = "0.00")
+    NumberStyle <- createStyle( fontSize = 10, numFmt = "0.00")
     
-    NumberStyle_adj.pval <- createStyle (fontSize = 4, numFmt = "SCIENTIFIC")
+    NumberStyle_adj.pval <- createStyle (fontSize = 10, numFmt = "SCIENTIFIC")
     
+    HeatmapStyle <- createStyle(fontSize = 10, numFmt = "0")
+    addStyle(wb,sheet=i, HeatmapStyle, rows = 1:nrow(muestra)+1 , cols = 1:(dim(color.values)[2]), gridExpand = TRUE)
     number.col <- ncol(muestra) - dim(color.values)[2]
     FCcols <- grep("FC", colnames(muestra))
     meanCols <- grep("mean", colnames(muestra))
@@ -138,16 +140,16 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
              cols = FCcols, gridExpand = TRUE)
     addStyle(wb, sheet = i, NumberStyle, rows = 2:(nrow(muestra)+1),
              cols = meanCols, gridExpand = TRUE)
-    addStyle(wb, sheet = i , NumberStyle_adj.pval, rows = 2:(nrow(muestra)+1), cols = adjPvalCols, gridExpand = TRUE)
+    addStyle(wb, sheet = i , NumberStyle_adj.pval, rows = 1:(nrow(muestra)+1), cols = adjPvalCols, gridExpand = TRUE)
     # Set Heights and Widths
-    setRowHeights(wb, sheet = i, rows = 1, heights = 50)
-    setRowHeights(wb, sheet = i, rows = 2:(nrow(muestra)+1), heights = 8)
+    setRowHeights(wb, sheet = i, rows = 1, heights = 100)
+    setRowHeights(wb, sheet = i, rows = 2:(nrow(muestra)+1), heights = 14)
     
-    setColWidths(wb, sheet = i, cols = ncol(color.values):ncol(muestra), widths = 5)
-    setColWidths(wb, sheet = i, cols = 1:ncol(color.values), widths = 0.50)
-    setColWidths(wb, sheet = i, cols =  number.col : ncol(muestra), widths = 2)
-    setColWidths(wb, sheet = i, cols =  FCcols, widths = 2)
-    setColWidths(wb, sheet = i, cols =  meanCols, widths = 2)
+    setColWidths(wb, sheet = i, cols = ncol(color.values):ncol(muestra), widths = 15)
+    setColWidths(wb, sheet = i, cols = 1:ncol(color.values), widths = 4)
+    setColWidths(wb, sheet = i, cols =  number.col : ncol(muestra), widths = 8)
+    setColWidths(wb, sheet = i, cols =  FCcols, widths = 8)
+    setColWidths(wb, sheet = i, cols =  meanCols, widths = 8)
     
     # Fix first row
     freezePane(wb, sheet = i , firstRow = TRUE)
@@ -159,15 +161,15 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     }
     if ("Length" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "Length")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 3)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 6)
     }
     if ("Strand" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "Strand")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 1)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 3)
     }
     if ("Chr" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "Chr")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 2)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 6)
     }
     # Heatmap :
     conditionalFormatting( wb,
@@ -184,7 +186,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   stats<-list()
   #Vector of contrast columns colors
   colors4stats <- c("#FFEA00", "#FFC000", "#00B0F0", "#92D050", "#FF6600", "#CCFF99","#CC99FF", "#FF5252", "#5C45FF", "#45FFC7","#fc79f4","#00B0F0", "#9458d1","#c2a03a", "#d1589b","#b3a7cc","#ccf1ff","#1fad66", "#ffeacc", "#f0a1a1" )
-  #només per sheets dels contrasts
+  #only contrasts sheets
   for (i in 1:length(contrast)){
     # Select contrast columns
     stats[[i]] <- grep(colnames(muestra),pattern= paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."),fixed = TRUE)
@@ -194,7 +196,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            cols = stats[[i]],
                            rows = 1:(nrow(muestra)+1),
                            rule = ".",
-                           style = createStyle(bgFill = colors4stats[i], fontSize = 4),
+                           style = createStyle(bgFill = colors4stats[i], fontSize = 10),
                            type = "contains"
     )# Colouring cols
     conditionalFormatting( wb,
@@ -202,12 +204,12 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            cols = stats[[i]],
                            rows = 1,
                            rule = ".",
-                           style = createStyle(bgFill = colors4stats[i], fontSize = 4),
+                           style = createStyle(bgFill = colors4stats[i], fontSize = 10),
                            type = "contains"
     )
     
   }
-  # només pel sheet de ALL DATA:
+  # only ALL DATA sheet:
   for (i in 1:length(contrast)){
     # Select contrast columns
     stats[[i]] <- grep(colnames(muestra),pattern= paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."),fixed = TRUE)
@@ -217,7 +219,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            cols = stats[[i]],
                            rows = 1:(nrow(muestra)+1),
                            rule = ".",
-                           style = createStyle(bgFill = colors4stats[i], fontSize = 4),
+                           style = createStyle(bgFill = colors4stats[i], fontSize = 10),
                            type = "contains"
     )# Colouring col
     conditionalFormatting( wb,
@@ -225,7 +227,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                            cols = stats[[i]],
                            rows = 1,
                            rule = ".",
-                           style = createStyle(bgFill = colors4stats[i], fontSize = 4),
+                           style = createStyle(bgFill = colors4stats[i], fontSize = 10),
                            type = "contains"
     )
     
@@ -255,3 +257,9 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   saveWorkbook(wb, file.path(pathoutput,paste(filename, "xlsx", sep=".")),overwrite = TRUE)
   message("The function was performed successful")
 }
+
+
+# 09/02/2021: change pvalue of contrast = 1
+# change letter size
+
+
