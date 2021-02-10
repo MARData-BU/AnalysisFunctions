@@ -134,7 +134,6 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     FCcols <- grep("FC", colnames(muestra))
     meanCols <- grep("mean", colnames(muestra))
     adjPvalCols <- grep("adj.P.Val", colnames(muestra))
-    rmaCols <- grep(".RMA", colnames(muestra))
     scaleCols <- grep(".scaled", colnames(muestra))
     
     addStyle(wb, sheet = i, NumberStyle, rows = 2:(nrow(muestra)+1),
@@ -152,8 +151,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     setColWidths(wb, sheet = i, cols = 1:ncol(color.values), widths = 2)
     setColWidths(wb, sheet = i, cols =  number.col : ncol(muestra), widths = 5)
     setColWidths(wb, sheet = i, cols =  FCcols, widths = 5)
-    setColWidths(wb, sheet = i, cols =  meanCols, widths = 4)
-    setColWidths(wb, sheet = i, cols =  rmaCols, widths = 4)
+    setColWidths(wb, sheet = i, cols =  meanCols[1]:ncol(muestra), widths = 4)
     # Fix first row
     freezePane(wb, sheet = i , firstRow = TRUE)
     
@@ -167,7 +165,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
       setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("Geneid" %in% colnames(muestra)){
-      number.col<-which(colnames(muestra) == "Symbol")
+      number.col<-which(colnames(muestra) == "Geneid")
       setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("mrna" %in% colnames(muestra)){
@@ -214,8 +212,8 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
       number.col<-which(colnames(muestra) == "GO:MF")
       setColWidths(wb, sheet = i, cols = number.col, widths = 4)
     }
-    if ("pathway" %in% colnames(muestra)){
-      number.col<-which(colnames(muestra) == "pathway")
+    if ("^path" %in% colnames(muestra)){
+      number.col<-which(colnames(muestra) == "^path")
       setColWidths(wb, sheet = i, cols = number.col, widths = 4)
     }
     if ("Description" %in% colnames(muestra)){
@@ -332,6 +330,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   saveWorkbook(wb, file.path(pathoutput,paste(filename, "xlsx", sep=".")),overwrite = TRUE)
   message("The function was performed successful")
 }
+
 
 
 # 09/02/2021: change pvalue of contrast = 1
