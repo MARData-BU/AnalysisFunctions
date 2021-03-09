@@ -33,10 +33,10 @@ GSEA_report_ENSEMBL <- function(GSEA_result, GeneSetAnnot=F ,GeneSets_annot=NULL
     gs.genes.tab <- gs.tab[gs.tab$`CORE ENRICHMENT` == "Yes", c("PROBE", "RANK IN GENE LIST")]
     rownames(gs.genes.tab) <- gs.genes.tab$PROBE
     gs.genes <- gs.genes.tab$PROBE
-    #Del paquet R (.db) org.Mm.eg.db Agafem la descripció del gen i la location
+    #Del paquet R (.db) org.Mm.eg.db Agafem la descripcio del gen i la location
     GENENAME.hs <- select(org.Mm.eg.db, keys=gs.genes, columns=c("SYMBOL", "GENENAME"), keytype="ENSEMBL")
     
-    #Comprobem que l'ordre és el mateix i afegim la ponderació del gen
+    #Comprobem que l'ordre es el mateix i afegim la ponderacio del gen
     #all.equal(gs.genes.tab$PROBE,GENENAME.hs$ENSEMBL)#TRUE
     GENENAME.hs$Gene_Rank <- gs.genes.tab[GENENAME.hs$ENSEMBL,"RANK IN GENE LIST"]
     
@@ -92,10 +92,10 @@ GSEA_report_ENSEMBL <- function(GSEA_result, GeneSetAnnot=F ,GeneSets_annot=NULL
     gs.genes.tab <- gs.tab[gs.tab$`CORE ENRICHMENT` == "Yes", c("PROBE", "RANK IN GENE LIST")]
     rownames(gs.genes.tab) <- gs.genes.tab$PROBE
     gs.genes <- gs.genes.tab$PROBE
-    #Del paquet R (.db) org.Mm.eg.db Agafem la descripció del gen i la location
+    #Del paquet R (.db) org.Mm.eg.db Agafem la descripcio del gen i la location
     GENENAME.hs <- select(org.Mm.eg.db, keys=gs.genes, columns=c("SYMBOL", "GENENAME"), keytype="ENSEMBL")
     
-    #Comprobem que l'ordre és el mateix i afegim la ponderació del gen
+    #Comprobem que l'ordre es el mateix i afegim la ponderacio del gen
     #all.equal(gs.genes.tab$PROBE,GENENAME.hs$SYMBOL)#TRUE
     GENENAME.hs$Gene_Rank <- gs.genes.tab[GENENAME.hs$ENSEMBL,"RANK IN GENE LIST"]
     

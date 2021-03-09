@@ -1,17 +1,17 @@
 data4TyersMake <- function(est_noctrls.annot, cond, fit.main, contrast){
-  #est_noctrls.annot: Matriu est_nocontrols amb anotació de gens annotatetableC
-  #cond: vector de condicions de cada una de les mostres utilitzada en el contrast
-  #fit.main: model limma utilitzat al DE analysis
-  #contrast: vector de vectors length dos amb els contrastos que es fan
+  #est_noctrls.annot: Matrix est_nocontrols with anotations of genes annotatetableC
+  #cond: vector of conditions 
+  #fit.main: limma model used in DE analysis
+  #contrast: vector of vectors length 2 with contrasts
   
-  #Obtenim els valors dels contrastos amb limma
+  #Get contrast's values from limma
   ConList <- vector("list", length(contrast)) 
   for (i in 1:length(contrast)) {
     ConList[[i]] <- topTable(fit.main,n=Inf,coef=i, adjust="fdr")[,c("logFC","P.Value","adj.P.Val")]
     ConList[[i]] <- ConList[[i]][order(rownames(ConList[[i]])),]
   }
   
-  #Escalem els valors de est_noctrls per al heatmap
+  #Scale values from est_noctrls for heatmap
   ia <- which(colnames(est_noctrls.annot) == "Chrom")
   est_noctrls <- est_noctrls.annot[, c(1:(ia-1))]
   est_noctrls_s<-est_noctrls[order(rownames(est_noctrls)),] 
@@ -22,7 +22,7 @@ data4TyersMake <- function(est_noctrls.annot, cond, fit.main, contrast){
   colnames(est_scaled.o) <- paste(colnames(est_scaled.o),"scaled",sep=".")
   est_scaled.o$AffyID <- rownames(est_noctrls_s)
   
-  #Construim la matriu amb els mean per condici?
+  #Build matrix with mean expression per condition
   u.cond <- unique(cond)
   mean.matrix <- matrix(data= NA, nrow=nrow(est_noctrls), ncol=length(u.cond))
   for (ic in 1:length(u.cond)) {
@@ -31,7 +31,7 @@ data4TyersMake <- function(est_noctrls.annot, cond, fit.main, contrast){
   }
   colnames(mean.matrix) <- paste("mean",u.cond, sep=".")
   
-  #Calculem el FC utilitzant els mean calculats anteriorment
+  #Compute FC using previously computed mean values
   FC.matrix <- matrix(data= NA, nrow=nrow(est_noctrls), ncol=length(contrast))
   col.FC.Names <- vector()
   for (ic in 1:length(contrast)) {
@@ -40,7 +40,7 @@ data4TyersMake <- function(est_noctrls.annot, cond, fit.main, contrast){
   }
   colnames(FC.matrix) <- col.FC.Names
   
-  #Construim la matriu dels topDiff amb els c("FC", "logFC","P.Value","adj.P.Val")
+  #Build topDiff matrix with c("FC", "logFC","P.Value","adj.P.Val")
   topDiff.mat <- matrix(data= NA, nrow=nrow(est_noctrls), ncol=length(contrast)*4)
   col.topDiff.Names <- vector()
   for (ic in 1:length(contrast)) {
@@ -55,7 +55,7 @@ data4TyersMake <- function(est_noctrls.annot, cond, fit.main, contrast){
   }
   colnames(topDiff.mat) <- col.topDiff.Names
   
-  #Ordenem i construim la matriu amb les anotacions
+  #Sort and build matrix with annotation
   topDiff.annot<-est_noctrls.annot[order(rownames(est_noctrls.annot)), 
                                    c("Symbol","mrna","UCSC_symbols","GO_biological_process",
                                      "GO_cellular_component", "GO_molecular_function", 
@@ -63,7 +63,7 @@ data4TyersMake <- function(est_noctrls.annot, cond, fit.main, contrast){
   colnames(topDiff.annot)[c(4:6)] <- c("GOBP", "GOCC", "GOMF")
   colnames(est_noctrls_s) <- paste(colnames(est_noctrls_s),"RMA",sep=".")
   
-  #Construim la matriu definitiva
+  #Build final matrix 
   data4Tyers<-data.frame(est_scaled.o, topDiff.annot,
                          topDiff.mat, mean.matrix,
                          est_noctrls_s)

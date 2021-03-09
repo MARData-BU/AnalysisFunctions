@@ -5,22 +5,22 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
   #fit.main: model to use in limma
   #contrast: List of vectors with each contrast to use
   #specie: specie used to make annotations
-  #GOndKEGG: Fem l'anotació amb kegg tarda força
+  #GOndKEGG: Annotation with GO and KEGG. Takes some time
   
-  #Obtenim els valors dels contrastos amb limma
+  #Obtain contrasts with limma
   ConList <- vector("list", length(contrast)) 
   for (i in 1:length(contrast)) {
     ConList[[i]] <- topTable(fit.main,n=Inf,coef=i, adjust="fdr")[,c("logFC","P.Value","adj.P.Val")]
     ConList[[i]] <- ConList[[i]][order(rownames(ConList[[i]])),]
   }
   
-  #Escalem els valors de la matriu de counts (normalitzada o no) per al heatmap
+  #Scale values from count matrix (normalized or not) for the heatmap
   est_noctrls_s<-expr.mat[order(rownames(expr.mat)),]
   est_centered<-est_noctrls_s-apply(est_noctrls_s,1,mean)
   est_scaled<-est_centered/apply(est_noctrls_s,1,sd)
   colnames(est_scaled) <- paste(colnames(est_scaled),"scaled",sep=".")
   
-  #Construim la matriu amb els mean per condici?
+  #Build matrix with mean expression per condition
   u.cond <- unique(cond)
   mean.matrix <- matrix(data= NA, nrow=nrow(expr.mat), ncol=length(u.cond))
   for (ic in 1:length(u.cond)) {
@@ -30,7 +30,7 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
   colnames(mean.matrix) <- paste("mean",u.cond, sep=".")
   rownames(mean.matrix) <- rownames(est_noctrls_s)
   
-  #Calculem el FC utilitzant els mean calculats anteriorment
+  #Compute FC using previously computed mean values
   FC.matrix <- matrix(data= NA, nrow=nrow(expr.mat), ncol=length(contrast))
   col.FC.Names <- vector()
   for (ic in 1:length(contrast)) {
@@ -39,7 +39,7 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
   }
   colnames(FC.matrix) <- col.FC.Names
   
-  #Construim la matriu dels topDiff amb els c("FC", "logFC","P.Value","adj.P.Val")
+  #Build topDiff matrix with c("FC", "logFC","P.Value","adj.P.Val")
   topDiff.mat <- matrix(data= NA, nrow=nrow(expr.mat), ncol=length(contrast)*4)
   col.topDiff.Names <- vector()
   for (ic in 1:length(contrast)) {
@@ -55,9 +55,9 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
   colnames(topDiff.mat) <- col.topDiff.Names
   
   
-  #Si la opció GOndKEGG està activada aleshores anotem per aquests termes també
+  #If GOndKEGG annotations are requested, call function to annoatate
   if(GOndKEGG) {
-    #Ordenem i construim la matriu amb les anotacions
+    #Sort and build matrix with annotations
     if (specie =="human") {
       annot.mat.complt <- Complete.Human.GO.nd.KEGG(annot.mat)
       
@@ -66,28 +66,28 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
     }
 
   } else {
-    #Ordenem la matriu d'anotacions
+    #Sort annotation matrix
     annot.mat.complt <- annot.mat[match(rownames(est_scaled),annot.mat$Geneid),]
   }
   
-  #Fem comprovacions abans de retornar l'objecte final
+  #Make sure everything is in same order before merging and returning
   a=all.equal(rownames(est_scaled), rownames(est_noctrls_s))
   b=all.equal(rownames(est_scaled), rownames(ConList[[1]]))
   c=all.equal(rownames(est_scaled), rownames(mean.matrix))
   d=all.equal(rownames(est_scaled), annot.mat.complt$Geneid)
   tryCatch(
     expr = {
-      a&b&c&d #Si esta tot en el mateix ordre
+      a&b&c&d #If all objects are in same order
       message("All objects are in same order. data4Tyers successfully created!")
       
-      #Construim la matriu definitiva només si es compleix l'expressió de sobre
+      #Build final matrix only if above expression is true
       data4Tyers<-data.frame(est_scaled, annot.mat.complt,
                              topDiff.mat, mean.matrix,
                              est_noctrls_s)
       return(data4Tyers)
       
     },
-    error = function(e){ #Si  a&b&c&d dona un error, salta el seguent missatge:
+    error = function(e){ #If  a&b&c&d generated error, pop up following message:
       message('Something is not in the correct order. Plese check that all inputs have same length and Geneid:')
       
       message('all.equal(rownames(est_scaled), rownames(est_noctrls_s): ',a)

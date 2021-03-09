@@ -1,11 +1,9 @@
-
-
-#' Title
+#' Perform comparisons between GSEA results
 #'
 #' @param pathinput  The pathway where excel files are
 #' @param pathoutput The pathway for the excel file output
-#' @param excelsUP The excels where funcional pathways are upregulated (posistive NES)
-#' @param excelsDOWN The excels where funcional pathways are downregulated (negative NES)
+#' @param excelsUP The excels where functional pathways are upregulated (positive NES)
+#' @param excelsDOWN The excels where functional pathways are downregulated (negative NES)
 #' @param contrast The contrast used in functional analysis and it shows in excel files names
 #' @param filename The name for the excel file output (without extension)
 #'
@@ -377,7 +375,7 @@ excel.comparison <- function(pathinput, pathoutput,excelsUP, excelsDOWN, contras
     conditionalFormatting(wb, sheet = 1, cols = 11, row = 1:dim(keep)[1]+1, rule = "$L2>0.05", style=createStyle(bgFill = c("#ffffff")))
     conditionalFormatting(wb, sheet = 1, cols = 11, row = 1:dim(keep)[1]+1, rule = "$M2>0.1", style=createStyle(bgFill = c("#ffffff")))
     
-    # 5è CONTRAST
+    # 5 CONTRAST
     
     conditionalFormatting(wb, sheet = 1, cols = 14, row = 1:dim(keep)[1]+1, rule = '<0', style=createStyle(bgFill = c("#FF0000")))
     conditionalFormatting(wb, sheet = 1, cols = 14, row = 1:dim(keep)[1]+1, rule = '>=0', style=createStyle(bgFill = c("#90EE90")))

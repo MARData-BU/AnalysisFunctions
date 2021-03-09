@@ -13,13 +13,13 @@ GSEA_genes_Report(GSEA_summary, name.f, symbol.col="SYMBOL", GSEA_Dir)
 
 \arguments{
   \item{GSEA_summary}{
-csv amb el summary dels resultats de GSEA generat amb la funció GSEA_report_Make
+csv with summary of GSEA results generated with function GSEA_report_Make
 }
   \item{name.f}{
 Name of the output file
 }
   \item{symbol.col}{
-Columna que conté els gene symbols
+Column with gene symbols
 }
   \item{GSEA_Dir}{
 Directory to save the results
@@ -29,7 +29,7 @@ Directory to save the results
 This function makes a summary of the GSEA report, but this time by gene
 }
 \value{
-data.frame ofject
+data.frame object
 }
 \examples{
 inDirFiles <- grep(".csv",list.files(GSEADir, full.names = F), value=T)

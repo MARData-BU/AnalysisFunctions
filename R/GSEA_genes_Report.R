@@ -7,9 +7,9 @@
 ##################################REPORT SUMMARY FOR EACH GENE##############################################################
 
 GSEA_genes_Report <- function(GSEA_summary, name.f, symbol.col="SYMBOL", GSEA_Dir=GSEADir) {
-  #GSEA_summary: csv amb el summary dels resultats de GSEA generat amb la funció GSEA_report_Make
+  #GSEA_summary: csv amb el summary dels resultats de GSEA generat amb la funcio GSEA_report_Make
   #name.f: name of the output file
-  #symbol.col: Columna que conté els gene symbols
+  #symbol.col: Columna que conte els gene symbols
   symb <- unique(GSEA_summary[,symbol.col])
   nTimes <- vector()
   GeneSets <- vector()
