@@ -82,7 +82,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
           writeData(wb, paste(contrast[[i]][1],"vs",contrast[[i]][2],sep=".") , muestra.f)
         }else{ # if muestra.filter.adj < padj : 
           warning("Padj = 0.05 was used to filter data.")
-          muestra.final <- muestra[which(muestra.filter.adj[1] <= padj & abs(logFC.col[i]) > logFC),]
+          muestra.final <- muestra[which(muestra.filter.adj[i] <= padj & abs(logFC.col[i]) > logFC),]
           #order by FC columns
           muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")]),]
           # add new sheet
