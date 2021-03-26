@@ -191,7 +191,9 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
     for (j in 1:length(contrast[[i]])){ # Loop through positive and negative
       if(nrow(gsea.L[[j]]@result)!=0){ # If there are significant results; do plots
         # GSEA Dotplot
-        p=clusterProfiler::dotplot(gsea.L[[j]], showCategory=40,font.size=8,label_format = 20,title= paste0("Enriched in ",names(gsea.L)[j],"\n p.adjust<0.05"))
+        gsea.L[[j]]@result$Description=strtrim(gsea.L[[j]]@result$Description, 70) # maximum label length
+        
+        p=clusterProfiler::dotplot(gsea.L[[j]], showCategory=40,font.size=8,title= paste0("Enriched in ",names(gsea.L)[j],"\n p.adjust<0.05"))
         
         ggsave(file.path(resultsDir, paste0("GSEA.",collection_name,".Dotplot.", names(gsea.L)[j],".png")),
                plot=p,width =9,height =7)
