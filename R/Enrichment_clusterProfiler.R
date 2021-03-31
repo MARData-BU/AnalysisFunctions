@@ -268,7 +268,7 @@ enrichment.plots <- function (enrichment,collection_name = "", resultsDir = getw
       
       ggsave(file.path(resultsDir, paste0("Enrichment.", 
                                           collection_name, ".Dotplot.", names(enrichment)[i], 
-                                          ".png")), plot = p, width = 9, height = 8)
+                                          ".png")), plot = p, width = 9, height = ifelse(nrow(enrichment[[i]]@result)>5,8,3))
       p = clusterProfiler::cnetplot(enrichment[[i]], 
                                         cex_label_gene = 0.5, cex_label_category = 0.7, 
                                         cex_category = 0.7, layout = "kk", showCategory = 10)
@@ -283,7 +283,7 @@ enrichment.plots <- function (enrichment,collection_name = "", resultsDir = getw
                                        showCategory = 30)
         ggsave(file.path(resultsDir, paste0("Enrichment.", 
                                             collection_name, ".EnrichmentMAP.", names(enrichment)[i], 
-                                            ".png")), plot = p, width = 9, height = 8)
+                                            ".png")), plot = p, width = 9, height = ifelse(nrow(enrichment[[i]]@result)>5,8,3))
       }
       else {
         png::writePNG(array(0, dim = c(1, 1, 4)), 
