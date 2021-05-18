@@ -54,6 +54,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
         writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
       }
     }else{ # if pvalue != NULL
+      warning("Pvalue = 0.05 was used to filter data.")
       muestra.filter.pval<-muestra[,grep(colnames(muestra),pattern="P.Value",fixed = TRUE)]
       logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
       muestra.final <- muestra[which(muestra.filter.pval <= pvalue & abs(logFC.col) > logFC ),]
@@ -90,6 +91,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
           writeData(wb, paste(contrast[[i]][1],"vs",contrast[[i]][2],sep=".") , muestra.f)
         }
       }else{ # if pvalue != NULL
+        warning("Pvalue = 0.05 was used to filter data.")
         muestra.filter.pval<-muestra[,grep(colnames(muestra),pattern="P.Value",fixed = TRUE)]
         logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
         muestra.final <- muestra[which(muestra.filter.pval[i] <= pvalue & abs(logFC.col[i]) > logFC ),]
