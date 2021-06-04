@@ -1,4 +1,4 @@
-make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue = NULL,padj = 0.05, logFC = 1){
+make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue = NULL,padj = 0.05, logFC = 1,add.colors=NULL){
   
   require(openxlsx)
   require(grDevices)
@@ -260,7 +260,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   # COLOURING CONTRASTS: 
   stats<-list()
   #Vector of contrast columns colors
-  colors4stats <- c("#FFEA00", "#FFC000", "#00B0F0", "#92D050", "#FF6600", "#CCFF99","#CC99FF", "#FF5252", "#5C45FF", "#45FFC7","#fc79f4","#00B0F0", "#9458d1","#c2a03a", "#d1589b","#b3a7cc","#ccf1ff","#1fad66", "#ffeacc", "#f0a1a1" )
+  colors4stats <- c(c("#FFEA00", "#FFC000", "#00B0F0", "#92D050", "#FF6600", "#CCFF99","#CC99FF", "#FF5252", "#5C45FF", "#45FFC7","#fc79f4","#00B0F0", "#9458d1","#c2a03a", "#d1589b","#b3a7cc","#ccf1ff","#1fad66", "#ffeacc", "#f0a1a1" ),add.colors)
   #Only for sheets in contrasts
   for (i in 1:length(contrast)){
     # Select contrast columns
@@ -330,7 +330,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
                          type = "colorScale"
   )
   saveWorkbook(wb, file.path(pathoutput,paste(filename, "xlsx", sep=".")),overwrite = TRUE)
-  message("The function was performed successful")
+  message("The function was performed successfully")
 }
 
 
