@@ -263,8 +263,12 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   colors4stats <- c(c("#FFEA00", "#FFC000", "#00B0F0", "#92D050", "#FF6600", "#CCFF99","#CC99FF", "#FF5252", "#5C45FF", "#45FFC7","#fc79f4","#00B0F0", "#9458d1","#c2a03a", "#d1589b","#b3a7cc","#ccf1ff","#1fad66", "#ffeacc", "#f0a1a1" ),add.colors)
   #Only for sheets in contrasts
   for (i in 1:length(contrast)){
+    adjp=paste("adj.P.Val",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
+    p=paste("P.Value",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
+    fc=paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
+    logfc=paste("logFC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
     # Select contrast columns
-    stats[[i]] <- grep(colnames(muestra),pattern= paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."),fixed = TRUE)
+    stats[[i]] <- which(colnames(muestra) %in% c(adjp,p,fc,logfc))
     # Colouring rows
     conditionalFormatting( wb,
                            sheet = i+1,
@@ -286,8 +290,12 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
   }
   # Only for sheet ALL DATA:
   for (i in 1:length(contrast)){
+    adjp=paste("adj.P.Val",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
+    p=paste("P.Value",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
+    fc=paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
+    logfc=paste("logFC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
     # Select contrast columns
-    stats[[i]] <- grep(colnames(muestra),pattern= paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."),fixed = TRUE)
+    stats[[i]] <- which(colnames(muestra) %in% c(adjp,p,fc,logfc))
     # Colouring rows
     conditionalFormatting( wb,
                            sheet = 1,
