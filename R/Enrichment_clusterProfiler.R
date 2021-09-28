@@ -88,10 +88,10 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
     geneList = list(genes_UP,genes_DOWN)
     names(geneList) = c(contrast[[i]][[1]],contrast[[i]][[2]])
     
-    enrichment[[i]][[names(geneList)[1]]] <- clusterProfiler::enricher(geneList[[1]], TERM2GENE = gmt,universe=nrow(data4Tyers),
+    enrichment[[i]][[names(geneList)[1]]] <- clusterProfiler::enricher(geneList[[1]], TERM2GENE = gmt,universe=data4Tyers$Geneid,
                                                                        minGSSize = minGSSize,
                                                                        maxGSSize = maxGSSize, pvalueCutoff = 1)
-    enrichment[[i]][[names(geneList)[2]]] <- clusterProfiler::enricher(geneList[[2]], TERM2GENE = gmt, universe=nrow(data4Tyers),
+    enrichment[[i]][[names(geneList)[2]]] <- clusterProfiler::enricher(geneList[[2]], TERM2GENE = gmt, universe=data4Tyers$Geneid,
                                                          minGSSize = minGSSize, 
                                                          maxGSSize = maxGSSize, pvalueCutoff = 1)
 
@@ -130,7 +130,7 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
 ##' @param gmt Data frame with gene sets. Can be obtained with function 
 ##' clusterProfiler::read.gmt. Must have a column "term" and a column "gene". 
 ##' The gene IDs must be in the same ofrmat as geneList (eg. SYMBOLS)
-##' @param universe Background genes. Number of profiled genes
+##' @param universe Background genes. Vector with all profiled genes
 ##' @param collection_name Vector with the name of the collection. It will be 
 ##' appended to the output directory/files name (eg. "c5.go.bp")
 ##' @param resultsDir Character vector with output results directory. Default is working directory.

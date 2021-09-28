@@ -24,7 +24,7 @@ performed for each position  of the list (ie. for each vector of genes).}
 clusterProfiler::read.gmt. Must have a column "term" and a column "gene". 
 The gene IDs must be in the same ofrmat as geneList (eg. SYMBOLS)}
 
-\item{universe}{Background genes. Number of profiled genes}
+\item{universe}{Background genes. Vector with all profiled genes}
 
 \item{collection_name}{Vector with the name of the collection. It will be 
 appended to the output directory/files name (eg. "c5.go.bp")}
