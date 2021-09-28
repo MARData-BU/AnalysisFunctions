@@ -7,6 +7,7 @@
 enrichment.geneList(
   geneList,
   gmt,
+  universe,
   collection_name = "",
   resultsDir = getwd(),
   specie = "human",
@@ -22,6 +23,8 @@ performed for each position  of the list (ie. for each vector of genes).}
 \item{gmt}{Data frame with gene sets. Can be obtained with function 
 clusterProfiler::read.gmt. Must have a column "term" and a column "gene". 
 The gene IDs must be in the same ofrmat as geneList (eg. SYMBOLS)}
+
+\item{universe}{Background genes. Number of profiled genes}
 
 \item{collection_name}{Vector with the name of the collection. It will be 
 appended to the output directory/files name (eg. "c5.go.bp")}
