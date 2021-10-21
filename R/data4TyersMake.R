@@ -23,7 +23,7 @@ data4TyersMake <- function(est_noctrls.annot, cond, fit.main, contrast){
   est_scaled.o$AffyID <- rownames(est_noctrls_s)
   
   #Build matrix with mean expression per condition
-  u.cond <- unique(cond)
+  u.cond <- levels(cond)
   mean.matrix <- matrix(data= NA, nrow=nrow(est_noctrls), ncol=length(u.cond))
   for (ic in 1:length(u.cond)) {
     uc <- u.cond[ic]
