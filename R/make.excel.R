@@ -153,7 +153,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     setColWidths(wb, sheet = i, cols = 1:ncol(color.values), widths = 2)
     setColWidths(wb, sheet = i, cols =  number.col : ncol(muestra), widths = 5)
     setColWidths(wb, sheet = i, cols =  FCcols, widths = 5)
-    setColWidths(wb, sheet = i, cols =  meanCols[1]:ncol(muestra), widths = 4)
+    setColWidths(wb, sheet = i, cols =  meanCols[1]:ncol(muestra), widths = 6)
     # Fix first row
     freezePane(wb, sheet = i , firstRow = TRUE)
     
@@ -180,39 +180,39 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
     }
     if ("GOBP" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GOBP")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GO.BP" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GO.BP")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GO:BP" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GO:BP")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GOCC" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GOCC")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GO.CC" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GO.CC")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GO:CC" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GO:CC")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GOMF" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GOMF")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GO.MF" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GO.MF")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("GO:MF" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "GO:MF")
-      setColWidths(wb, sheet = i, cols = number.col, widths = 4)
+      setColWidths(wb, sheet = i, cols = number.col, widths = 8)
     }
     if ("^path" %in% colnames(muestra)){
       number.col<-which(colnames(muestra) == "^path")
@@ -346,4 +346,4 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
 # 09/02/2021: change pvalue of contrast = 1
 # change letter size
 # 10/02/2021: change widths of columns 
-
+# 21/10/2021: change widths of columns 
