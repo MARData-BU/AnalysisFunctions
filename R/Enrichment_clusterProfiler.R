@@ -148,11 +148,15 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
 ##' @import clusterProfiler
 ##' @import openxlsx 
 enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resultsDir = getwd(), 
-                                  specie = "human",HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500) {
+                                  specie = "human",HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500,plot_top = 50, p.adjust = 0.05) {
   # If data4tyers and contrasts, will run per contrast and separate UP and DOWN
   # If genelist provided, will run for length(genelist)
   require(clusterProfiler)
   require(openxlsx)
+  require(enrichplot)
+  require(gridExtra)
+  require(png)
+  require(ggplot2)
   headerStyle1 <- createStyle(halign = "center", valign = "center", 
                               textDecoration = "Bold", wrapText = TRUE)
   if (specie == "mouse") {
@@ -217,48 +221,16 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
                                                        ".RData")))
   cat(i," enrichemnts done!\n")
   
-  return(enrichment)
-  
-  
-}
-
-##' Create plots summarizing enrichment results
-##'
-##' Function that creates dotplots, gene-concept networks 
-##' and enrichmentMAP from clusterProfiler and enrichplot packages. 
-##' @param enrichment enrichment results obtained with enrichment.geneList or enrichment.data4tyers functions
-##' @param collection_name Name of the collection to append to output files.
-##' @param resultsDir Character vector with output results directory. Default is working directory.
-##' @param plot_top maximum number of GSEA plots (default 50 to return all results)
-##' @param p.adjust adjusted pvalue cutoff (default 0.05). Gene sets with p.adjust 
-##' below this threshold will be included in all plots, unless maximum for visualization is reached.
-##' @return This function creates a folder for each contrast and generates
-##' dotplots, gene-concept networks and enrichmentMAP for length(enrichment).
-##' @author Julia Perera Bel <jperera@imim.es>
-##' @export
-##' @import clusterProfiler
-##' @import enrichplot 
-##' @import gridExtra
-##' @import png 
-##' @import ggplot2
-enrichment.plots <- function (enrichment,collection_name = "", resultsDir = getwd(), 
-          plot_top = 50, p.adjust = 0.05) 
-{
-  require(clusterProfiler)
-  require(enrichplot)
-  require(gridExtra)
-  require(png)
-  require(ggplot2)
-  dir = resultsDir
+    dir = resultsDir
   for (i in 1:length(enrichment)) {
     cat("Plotting:", names(enrichment)[i], "\n")
     resultsDir = file.path(dir, paste("Enrichment", collection_name, 
                                       names(enrichment)[i], sep = "."))
     dir.create(resultsDir, showWarnings = F)
-  
+    
     # Subset to significant results (with input p.adjust)
     enrichment[[i]]@result=enrichment[[i]]@result[ enrichment[[i]]@result$p.adjust < p.adjust,]
-
+    
     if(nrow(enrichment[[i]]@result)!=0){ # If there are significant results; do plots
       enrichment[[i]]@result$Description=strtrim(enrichment[[i]]@result$Description, 70) # maximum label length
       p = clusterProfiler::dotplot(enrichment[[i]], showCategory = plot_top, 
@@ -271,16 +243,16 @@ enrichment.plots <- function (enrichment,collection_name = "", resultsDir = getw
                                           collection_name, ".Dotplot.", names(enrichment)[i], 
                                           ".png")), plot = p, width = 9, height = ifelse(nrow(enrichment[[i]]@result)>5,8,3))
       p = clusterProfiler::cnetplot(enrichment[[i]], 
-                                        cex_label_gene = 0.5, cex_label_category = 0.7, 
-                                        cex_category = 0.7, layout = "kk", showCategory = 10)
+                                    cex_label_gene = 0.5, cex_label_category = 0.7, 
+                                    cex_category = 0.7, layout = "kk", showCategory = 10)
       ggsave(file.path(resultsDir, paste0("Enrichment.", 
                                           collection_name, ".GeneConceptNetworks.", 
                                           names(enrichment)[i], ".png")), plot = p, width = 9, height = 8)
       if (nrow(enrichment[[i]]@result) > 1) {
         pt = enrichplot::pairwise_termsim(enrichment[[i]], 
                                           method = "JC", semData = NULL, showCategory = 200)
-	        
-	p <- clusterProfiler::emapplot(pt, cex_label_category = 0.5, 
+        
+        p <- clusterProfiler::emapplot(pt, cex_label_category = 0.5, 
                                        showCategory = 30)
         ggsave(file.path(resultsDir, paste0("Enrichment.", 
                                             collection_name, ".EnrichmentMAP.", names(enrichment)[i], 
@@ -303,5 +275,5 @@ enrichment.plots <- function (enrichment,collection_name = "", resultsDir = getw
                                                           paste0("Enrichment.", collection_name, ".EnrichmentMAP.", 
                                                                  names(enrichment)[i], ".png")))
     }
-  }
+  }  
 }
