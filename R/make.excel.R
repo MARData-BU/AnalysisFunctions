@@ -1,5 +1,6 @@
 make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue = NULL,padj = 0.05, logFC = 1,add.colors=NULL){
   
+  require(wrapr)
   require(openxlsx)
   require(grDevices)
   ## Read Data
@@ -40,7 +41,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
         logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
         muestra.final <- muestra[which(muestra.filter.pval <= 0.05 & abs(logFC.col) > logFC ),]
         #order by FC columns
-        muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
+        muestra.f <- muestra.final[orderv(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
         # add new sheet
         addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
         writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
@@ -48,7 +49,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
         warning("Padj = 0.05 was used to filter data.")
         muestra.final <- muestra[which(muestra.filter.adj <= padj & abs(logFC.col) > logFC),]
         #order by FC columns
-        muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
+        muestra.f <- muestra.final[orderv(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
         # add new sheet
         addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
         writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
@@ -59,7 +60,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
       logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
       muestra.final <- muestra[which(muestra.filter.pval <= pvalue & abs(logFC.col) > logFC ),]
       #order by FC columns
-      muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
+      muestra.f <- muestra.final[orderv(muestra.final[paste("FC",contrast[[1]][1],"vs",contrast[[1]][2],sep=".")]),]
       # add new sheet
       addWorksheet(wb, sheetName = paste(contrast[[1]][1],"vs",contrast[[1]][2],sep="."))
       writeData(wb, paste(contrast[[1]][1],"vs",contrast[[1]][2],sep=".") , muestra.f)
@@ -77,7 +78,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
           logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
           muestra.final <- muestra[which(muestra.filter.pval[i] <= 0.05 & abs(logFC.col[i]) > logFC ),]
           #order by FC columns
-          muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")]),]
+          muestra.f <- muestra.final[orderv(muestra.final[paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")]),]
           # add new sheet
           addWorksheet(wb, sheetName = paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."))
           writeData(wb, paste(contrast[[i]][1],"vs",contrast[[i]][2],sep=".") , muestra.f)
@@ -85,7 +86,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
           warning("Padj = 0.05 was used to filter data.")
           muestra.final <- muestra[which(muestra.filter.adj[i] <= padj & abs(logFC.col[i]) > logFC),]
           #order by FC columns
-          muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")]),]
+          muestra.f <- muestra.final[orderv(muestra.final[paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")]),]
           # add new sheet
           addWorksheet(wb, sheetName = paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."))
           writeData(wb, paste(contrast[[i]][1],"vs",contrast[[i]][2],sep=".") , muestra.f)
@@ -96,7 +97,7 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
         logFC.col <- muestra[,grep(colnames(muestra),pattern="logFC",fixed = TRUE)]
         muestra.final <- muestra[which(muestra.filter.pval[i] <= pvalue & abs(logFC.col[i]) > logFC ),]
         #order by FC columns
-        muestra.f <- muestra.final[order(muestra.final[paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")]),]
+        muestra.f <- muestra.final[orderv(muestra.final[paste("FC",contrast[[i]][1],"vs",contrast[[i]][2],sep=".")]),]
         # add new sheet
         addWorksheet(wb, sheetName = paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."))
         writeData(wb, paste(contrast[[i]][1],"vs",contrast[[i]][2],sep=".") , muestra.f)
@@ -347,3 +348,4 @@ make.excel <- function(pathinput,fileinput,contrast,pathoutput,filename, pvalue 
 # change letter size
 # 10/02/2021: change widths of columns 
 # 21/10/2021: change widths of columns 
+# 02/02/2022: with the updated version of R, appeared a warning message. We could solve it replacing order() by orderv() : expalantion -> https://www.r-bloggers.com/2021/02/it-has-always-been-wrong-to-call-order-on-a-data-frame/
