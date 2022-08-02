@@ -13,7 +13,9 @@ enrichment.geneList(
   specie = "human",
   HOM_MouseHuman = "",
   minGSSize = 15,
-  maxGSSize = 500
+  maxGSSize = 500,
+  plot_top = 50,
+  plot.p.adjust = 0.05
 )
 }
 \arguments{
@@ -40,6 +42,10 @@ following columns: HomoloGene.ID (common ID for homologues), Common.Organism.Nam
 \item{minGSSize}{minimal size of each geneSet for analyzing (default 15)}
 
 \item{maxGSSize}{maximal size of genes annotated for testing (Default 500)}
+
+\item{plot_top}{maximum number of genesets to include in the dotplot}
+
+\item{plot.p.adjust}{plot enrichment results below this adjusted pvalue cutoff (default 0.05)}
 }
 \value{
 Returns a list with enrichemnt results for each contrast. The list is saved as a RData object 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Enrichment_clusterProfiler.R
 \name{enrichment.data4tyers}
 \alias{enrichment.data4tyers}
-\title{Run a universal enrichment for a list of contrasts with cluterProfiler function "enricher"}
+\title{Run a universal enrichment (ORA) for a list of contrasts with cluterProfiler function "enricher"}
 \usage{
 enrichment.data4tyers(
   data4Tyers,
@@ -16,7 +16,9 @@ enrichment.data4tyers(
   maxGSSize = 500,
   p.value = 0.05,
   p.adjust = 0.05,
-  logFC = 0
+  logFC = 0,
+  plot_top = 50,
+  plot.p.adjust = 0.05
 )
 }
 \arguments{
@@ -43,11 +45,15 @@ following columns: HomoloGene.ID (common ID for homologues), Common.Organism.Nam
 
 \item{maxGSSize}{maximal size of genes annotated for testing (Default 500)}
 
-\item{p.value}{pvalue cutoff (default 0.05)}
+\item{p.value}{include DE genes below this pvalue cutoff (default 0.05)}
 
-\item{p.adjust}{adjusted pvalue cutoff (default 0.05)}
+\item{p.adjust}{include DE genes below this adjusted pvalue cutoff (default 0.05)}
 
 \item{logFC}{logFC cutoff (default to 0)}
+
+\item{plot_top}{maximum number of genesets to include in the dotplot}
+
+\item{plot.p.adjust}{plot enrichment results below this adjusted pvalue cutoff (default 0.05)}
 }
 \value{
 Returns a list with enrichemnt results for each contrast. The list is saved as a RData object 
@@ -55,8 +61,9 @@ in the resultsDir directory, along with a folder for each contrast containing an
 excel file with enrichment results.
 }
 \description{
-Function that performs a gene-set enrichment analysis using the function enricher
-from clusterProfiler package. This function performs an hypergeometric test for each gene set.
+Function that performs a gene-set enrichment analysis (ORA) using the function enricher
+from clusterProfiler package. This function performs an hypergeometric test for each gene set, 
+for up an ddown-regulated genes separately.
 }
 \author{
 Julia Perera Bel <jperera@imim.es>
