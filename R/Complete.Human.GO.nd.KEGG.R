@@ -94,7 +94,7 @@ Complete.Human.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
                          GO.annot.agg.s[,c(2:ncol(GO.annot.agg.s))])
   
   colnames(NEW.annot.mat) <- c(colnames(annot.mat.s[,c(1:ncol(annot.mat.s))]),
-                               "Description", "GO.BP", "GO.CC", "GO.MF)
+                               "Description", "GO.BP", "GO.CC", "GO.MF")
   return(NEW.annot.mat)
   
 }
