@@ -15,9 +15,9 @@ Complete.Human.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
   metadata(org.Hs.eg.db)
   
   if(IDtype=="geneSymb") {
-    GENENAME.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="SYMBOL")
+    GENENAME.hs <-  select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="SYMBOL")
   } else if (IDtype=="ENSEMBLid") {
-    GENENAME.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="ENSEMBL")
+    GENENAME.hs <-  select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="ENSEMBL")
     colnames(GENENAME.hs)[colnames(GENENAME.hs) == "ENSEMBL"] <- "SYMBOL"
   }
   
@@ -36,14 +36,14 @@ Complete.Human.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
   metadata(GO.db)
   
   if(IDtype=="geneSymb") {
-    GO.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="SYMBOL")#warning pero es ok
+    GO.hs <-  select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="SYMBOL")#warning pero es ok
   } else if (IDtype=="ENSEMBLid") {
-    GO.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="ENSEMBL")
+    GO.hs <-  select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="ENSEMBL")
     colnames(GO.hs)[colnames(GO.hs) == "ENSEMBL"] <- "SYMBOL"
   }
   
   dim(GO.hs)#268499      4
-  GO.Term <-  AnnotationDbi::select(GO.db, keys=GO.hs$GO, columns=c("TERM"), keytype="GOID")#warning pero es ok
+  GO.Term <-  select(GO.db, keys=GO.hs$GO, columns=c("TERM"), keytype="GOID")#warning pero es ok
   all.equal(GO.hs$GO, GO.Term$GOID) #TRUE
   GO.annot <- cbind(GO.hs, GO.Term)
   

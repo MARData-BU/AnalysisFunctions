@@ -15,9 +15,9 @@ Complete.Mouse.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
   metadata(org.Mm.eg.db)
   
   if(IDtype=="geneSymb") {
-    GENENAME.Mm <- AnnotationDbi::select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="SYMBOL")
+    GENENAME.Mm <- select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="SYMBOL")
   } else if (IDtype=="ENSEMBLid") {
-    GENENAME.Mm <-AnnotationDbi::select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="ENSEMBL")
+    GENENAME.Mm <-select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="ENSEMBL")
     colnames(GENENAME.Mm)[colnames(GENENAME.Mm) == "ENSEMBL"] <- "SYMBOL"
   }
   
@@ -35,14 +35,14 @@ Complete.Mouse.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
   metadata(GO.db)
   
   if(IDtype=="geneSymb") {
-    GO.Mm <- AnnotationDbi::select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="SYMBOL")
+    GO.Mm <- select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="SYMBOL")
   } else if (IDtype=="ENSEMBLid") {
-    GO.Mm <- AnnotationDbi::select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="ENSEMBL")
+    GO.Mm <- select(org.Mm.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="ENSEMBL")
     colnames(GO.Mm)[colnames(GO.Mm) == "ENSEMBL"] <- "SYMBOL"
   }
   
   dim(GO.Mm)#244067      4 // 239172      4
-  GO.Term <- AnnotationDbi::select(GO.db, keys=GO.Mm$GO, columns=c("TERM"), keytype="GOID")
+  GO.Term <- select(GO.db, keys=GO.Mm$GO, columns=c("TERM"), keytype="GOID")
   all.equal(GO.Mm$GO, GO.Term$GOID) #comprovem que l'ordre ?s el mateix abans de fer el cbind
   GO.annot <- cbind(GO.Mm, GO.Term)
   
