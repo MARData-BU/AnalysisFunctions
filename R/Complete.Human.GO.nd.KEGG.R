@@ -15,9 +15,9 @@ Complete.Human.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
   metadata(org.Hs.eg.db)
   
   if(IDtype=="geneSymb") {
-    GENENAME.hs <- select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="SYMBOL")
+    GENENAME.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="SYMBOL")
   } else if (IDtype=="ENSEMBLid") {
-    GENENAME.hs <- select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="ENSEMBL")
+    GENENAME.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GENENAME"), keytype="ENSEMBL")
     colnames(GENENAME.hs)[colnames(GENENAME.hs) == "ENSEMBL"] <- "SYMBOL"
   }
   
@@ -36,14 +36,14 @@ Complete.Human.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
   metadata(GO.db)
   
   if(IDtype=="geneSymb") {
-    GO.hs <- select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="SYMBOL")#warning pero es ok
+    GO.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="SYMBOL")#warning pero es ok
   } else if (IDtype=="ENSEMBLid") {
-    GO.hs <- select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="ENSEMBL")
+    GO.hs <-  AnnotationDbi::select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("GO"), keytype="ENSEMBL")
     colnames(GO.hs)[colnames(GO.hs) == "ENSEMBL"] <- "SYMBOL"
   }
   
   dim(GO.hs)#268499      4
-  GO.Term <- select(GO.db, keys=GO.hs$GO, columns=c("TERM"), keytype="GOID")#warning pero es ok
+  GO.Term <-  AnnotationDbi::select(GO.db, keys=GO.hs$GO, columns=c("TERM"), keytype="GOID")#warning pero es ok
   all.equal(GO.hs$GO, GO.Term$GOID) #TRUE
   GO.annot <- cbind(GO.hs, GO.Term)
   
@@ -88,47 +88,13 @@ Complete.Human.GO.nd.KEGG <- function(annot.mat, GeneidCol = "Geneid", IDtype="g
   GO.annot.desg <- data.frame(SYMBOL=symb.vect, GO.BP.p, GO.CC.p, GO.MF.p)
   GO.annot.agg.s <- GO.annot.desg[order(as.character(GO.annot.desg$SYMBOL)),]
   
-  ##################################################################
-  #Agafem el KEGG de KEGG.db
-  require(KEGG.db)
-  
-  if(IDtype=="geneSymb") {
-    PATH.hs <- select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("PATH"), keytype="SYMBOL")
-  } else if (IDtype=="ENSEMBLid") {
-    PATH.hs <- select(org.Hs.eg.db, keys=annot.mat.s[,GeneidCol], columns=c("PATH"), keytype="ENSEMBL")
-    colnames(PATH.hs)[colnames(PATH.hs) == "ENSEMBL"] <- "SYMBOL"
-  }                            
-  
-  dim(PATH.hs)#50146     2
-  ls("package:KEGG.db")
-  xx <- AnnotationDbi::as.list(KEGGPATHID2NAME)
-  PathInfo <- vector(mode="character", length=nrow(PATH.hs))
-  for (i in 1:nrow(PATH.hs)) {
-    p.id <- PATH.hs$PATH[i]
-    
-    if(is.na(p.id) | sum(p.id==names(xx)) == 0){
-      PathInfo[i] <- NA
-    } else {
-      PathInfo[i] <- paste(p.id, xx[[p.id]], sep=":")
-    }
-  }
-  KeggPath <- cbind(PATH.hs, PathInfo)
-  KeggPath.agg <-aggregate(KeggPath, by=list(KeggPath$SYMBOL), FUN=function(x) paste(x, collapse="//"))
-  KeggPath.agg <- KeggPath.agg[,c("Group.1","PathInfo")]
-  KeggPath.s <- KeggPath.agg[order(KeggPath.agg$Group.1),]
-  
-  all.equal(KeggPath.s$Group.1, as.character(GO.annot.agg.s$SYMBOL))#TRUE
-  all.equal(KeggPath.s$Group.1, GENENAME.hs.agg.s$Group.1)#TRUE
-  all.equal(KeggPath.s$Group.1, annot.mat.s[,GeneidCol])#TRUE
   
   NEW.annot.mat <- cbind(annot.mat.s[,c(1:ncol(annot.mat.s))],
                          GENENAME.hs.agg.s$GENENAME,
-                         GO.annot.agg.s[,c(2:ncol(GO.annot.agg.s))],
-                         KeggPath.s$PathInfo)
+                         GO.annot.agg.s[,c(2:ncol(GO.annot.agg.s))])
   
   colnames(NEW.annot.mat) <- c(colnames(annot.mat.s[,c(1:ncol(annot.mat.s))]),
-                               "Description", "GO.BP", "GO.CC", "GO.MF",
-                               "Path.Kegg")
+                               "Description", "GO.BP", "GO.CC", "GO.MF)
   return(NEW.annot.mat)
   
 }
