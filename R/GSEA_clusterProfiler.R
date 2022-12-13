@@ -140,12 +140,13 @@ GSEA.run <- function(data4Tyers,contrast,gmt,resultsDir=getwd(),specie="human",
 ##' @import gridExtra
 ##' @import png 
 GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
-                       plot_top=50,p.adjust=0.05){
+                       plot_top=10,p.adjust=0.05){
   require(clusterProfiler)
   require(enrichplot)
   require(gridExtra)
   require(png)
-
+  require(Cairo)
+  options(bitmapType = "cairo")
   dir=resultsDir
   for (i in 1:length(contrast)){
     cat("Plotting", paste(contrast[[i]][1],"vs",contrast[[i]][2],sep="."),"\n")
@@ -200,15 +201,18 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
         
         # GSEA Running score
         p=list()
+        # Create GSEA dir for Running Score results
+        GSEA_score_dir=paste0(resultsDir,"/","RunningScore");dir.create(GSEA_score_dir)
         ## Set max num. of plots to all DE or to plot_top
         n_plot=ifelse(nrow(gsea.L[[j]]@result)>plot_top,plot_top,nrow(gsea.L[[j]]@result))
         for (u in 1:n_plot){
-          p[[u]]=enrichplot::gseaplot2(gsea.L[[j]], base_size = 6, 
+          p=enrichplot::gseaplot2(gsea.L[[j]],color="green", base_size = 4.5, 
                            geneSetID = u,title=gsea.L[[j]]$Description[u])
+          print(p)
+          ggsave(filename = file.path(GSEA_score_dir, paste0(gsea.L[[j]]$Description[u],".RunningScore.",names(gsea.L)[j],".png")),
+                 width = 3,height =2.5)
         }
-        ggsave(file.path(resultsDir, paste0("GSEA2.",collection_name,".RunningScore.",names(gsea.L)[j],".pdf")),
-               plot=marrangeGrob(grobs=p,nrow=3,ncol = 5),width = 15,height =7.5)
-        
+
         # GSEA Gene-Concept networks (top 5 gene sets by default)
         p=clusterProfiler::cnetplot(gsea.L[[j]], foldChange=gsea.L[[j]]@geneList,cex_label_gene = 0.5,
                    cex_label_category = 0.7,cex_category = 0.7,layout = "kk",showCategory = 5)
