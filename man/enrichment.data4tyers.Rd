@@ -10,7 +10,7 @@ enrichment.data4tyers(
   gmt,
   collection_name = "",
   resultsDir = getwd(),
-  specie = "human",
+  translate_genes = FALSE,
   HOM_MouseHuman = "",
   minGSSize = 15,
   maxGSSize = 500,
@@ -22,23 +22,23 @@ enrichment.data4tyers(
 )
 }
 \arguments{
-\item{data4Tyers}{data4tyers dataframe. Must contain a Geneid column and 
+\item{data4Tyers}{data4tyers dataframe. Must contain a Geneid column and
 P.Value, adj.P.Val and logFC columns for each contrast (eg. "P.Value.LES_ACT.vs.LES_INACT")}
 
 \item{contrast}{List with one vector of length 2 for each contrast.}
 
-\item{gmt}{Data frame with gene sets. Can be obtained with function 
+\item{gmt}{Data frame with gene sets. Can be obtained with function
 clusterProfiler::read.gmt. Must have a column "term" and a column "gene".}
 
-\item{collection_name}{Vector with the name of the collection. It will be 
+\item{collection_name}{Vector with the name of the collection. It will be
 appended to the output directory/files name (eg. "c5.go.bp")}
 
 \item{resultsDir}{Character vector with output results directory. Default is working directory.}
 
-\item{specie}{Name of the specie. Accepts "human" and "mouse". If "mouse", a dataframe 
-with homologues must be provided (see HOM_MouseHuman)}
+\item{translate_genes}{Wether to translate gene ids to homologues. If TRUE, a dataframe
+with homologues must be provided (see HOM_MouseHuman), default is FALSE.}
 
-\item{HOM_MouseHuman}{dataframe with HOM_MouseHumanSequence.txt. Must have the 
+\item{HOM_MouseHuman}{dataframe with HOM_MouseHumanSequence.txt. Must have the
 following columns: HomoloGene.ID (common ID for homologues), Common.Organism.Name, Symbol}
 
 \item{minGSSize}{minimal size of each geneSet for analyzing (default 15)}
@@ -56,13 +56,13 @@ following columns: HomoloGene.ID (common ID for homologues), Common.Organism.Nam
 \item{plot.p.adjust}{plot enrichment results below this adjusted pvalue cutoff (default 0.05)}
 }
 \value{
-Returns a list with enrichemnt results for each contrast. The list is saved as a RData object 
-in the resultsDir directory, along with a folder for each contrast containing an 
+Returns a list with enrichemnt results for each contrast. The list is saved as a RData object
+in the resultsDir directory, along with a folder for each contrast containing an
 excel file with enrichment results.
 }
 \description{
 Function that performs a gene-set enrichment analysis (ORA) using the function enricher
-from clusterProfiler package. This function performs an hypergeometric test for each gene set, 
+from clusterProfiler package. This function performs an hypergeometric test for each gene set,
 for up an ddown-regulated genes separately.
 }
 \author{

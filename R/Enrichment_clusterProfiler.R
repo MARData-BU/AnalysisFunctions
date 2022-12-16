@@ -12,7 +12,7 @@
 ##' @param collection_name Vector with the name of the collection. It will be
 ##' appended to the output directory/files name (eg. "c5.go.bp")
 ##' @param resultsDir Character vector with output results directory. Default is working directory.
-##' @param Traduce_genes Parameter that accepts TRUE or FALSE. If TRUE, a dataframe
+##' @param translate_genes Wether to translate gene ids to homologues. If TRUE, a dataframe
 ##' with homologues must be provided (see HOM_MouseHuman), default is FALSE.
 ##' @param HOM_MouseHuman dataframe with HOM_MouseHumanSequence.txt. Must have the
 ##' following columns: HomoloGene.ID (common ID for homologues), Common.Organism.Name, Symbol
@@ -31,14 +31,14 @@
 ##' @import clusterProfiler
 ##' @import openxlsx
 enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "", resultsDir = getwd(),
-                                  Traduce_genes = FALSE,HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500, p.value = 0.05,
+                                  translate_genes = FALSE,HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500, p.value = 0.05,
                                   p.adjust = 0.05, logFC=0,plot_top = 50, plot.p.adjust = 0.05) {
   # If data4tyers and contrasts, will run per contrast and separate UP and DOWN
   require(clusterProfiler)
   require(openxlsx)
   headerStyle1 <- createStyle(halign = "center", valign = "center",
                               textDecoration = "Bold", wrapText = TRUE)
-  if (Traduce_genes == TRUE) {
+  if (translate_genes == TRUE) {
     Human.HOM <- HOM_MouseHuman[HOM_MouseHuman$Common.Organism.Name ==
                                   "human", ]
     Mouse.HOM <- HOM_MouseHuman[HOM_MouseHuman$Common.Organism.Name ==
@@ -71,6 +71,8 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
   }
   enrichment = list()
   dir = resultsDir
+  #Add data4tyers genes to gmt to calculate the proper Universe (bug in enricher function)
+  gmt <- rbind(gmt,data.frame("term" = rep("Data4Tyers",length(data4Tyers$Geneid)), gene=data4Tyers$Geneid))
   for (i in 1:length(contrast)) {
     enrichment[[i]] = list()
     names(enrichment)[i]=paste(contrast[[i]][1],"vs",contrast[[i]][2],sep=".")
@@ -220,7 +222,7 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
 ##' @param collection_name Vector with the name of the collection. It will be
 ##' appended to the output directory/files name (eg. "c5.go.bp")
 ##' @param resultsDir Character vector with output results directory. Default is working directory.
-##' @param specie Name of the specie. Accepts "human" and "mouse". If "mouse", a dataframe
+##' @param translate_genes Wether to translate gene ids to homologues. If "TRUE", a dataframe
 ##' with homologues must be provided (see HOM_MouseHuman)
 ##' @param HOM_MouseHuman dataframe with HOM_MouseHumanSequence.txt. Must have the
 ##' following columns: HomoloGene.ID (common ID for homologues), Common.Organism.Name, Symbol
@@ -236,7 +238,7 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
 ##' @import clusterProfiler
 ##' @import openxlsx
 enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resultsDir = getwd(),
-                                  specie = "human",HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500,plot_top = 50, plot.p.adjust= 0.05) {
+                                translate_genes = FALSE,HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500,plot_top = 50, plot.p.adjust= 0.05) {
   # If data4tyers and contrasts, will run per contrast and separate UP and DOWN
   # If genelist provided, will run for length(genelist)
   require(clusterProfiler)
@@ -247,7 +249,7 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
   require(ggplot2)
   headerStyle1 <- createStyle(halign = "center", valign = "center",
                               textDecoration = "Bold", wrapText = TRUE)
-  if (specie == "mouse") {
+  if (translate_genes ==  TRUE) {
     cat("Converting mouse symbols to human homologues...\n")
     Human.HOM <- HOM_MouseHuman[HOM_MouseHuman$Common.Organism.Name ==
                                   "human", ]
@@ -281,6 +283,8 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
   }
   enrichment = list()
   dir = resultsDir
+  #Add data4tyers genes to gmt to calculate the proper Universe (bug in enricher function)
+  gmt <- rbind(gmt,data.frame("term" = rep("Data4Tyers",length(data4Tyers$Geneid)), gene=data4Tyers$Geneid))
   for (i in 1:length(geneList)) {
     cat("Running enrichment",i,":",names(geneList)[i],"\n")
 

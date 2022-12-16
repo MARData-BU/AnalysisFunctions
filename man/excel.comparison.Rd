@@ -26,9 +26,6 @@ excel.comparison(
 
 \item{filename}{The name for the excel file output (without extension)}
 }
-\value{
-
-}
 \description{
 Perform comparisons between GSEA results
 }

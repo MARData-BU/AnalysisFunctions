@@ -9,7 +9,7 @@ GSEA.plots(
   contrast,
   collection_name = "",
   resultsDir = getwd(),
-  plot_top = 50,
+  plot_top = 10,
   p.adjust = 0.05
 )
 }
