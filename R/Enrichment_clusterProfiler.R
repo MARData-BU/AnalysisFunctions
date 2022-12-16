@@ -279,12 +279,35 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
 
     }
     geneList=geneList.HOM
+    
+    #### Adding changing the universe too !!!
+    cat("Converting mouse symbols to human homologues of universe...\n")
+    sum(universe %in% Mouse.HOM$Symbol)
+    Mouse.ID <- Mouse.HOM[Mouse.HOM$Symbol %in% universe, ]
+    colnames(Mouse.ID)[2:ncol(Mouse.ID)] <- paste(colnames(Mouse.ID)[2:ncol(Mouse.ID)], 
+                                                  "Mouse", sep = ".")
+    colnames(Human.HOM)[2:ncol(Human.HOM)] <- paste(colnames(Human.HOM)[2:ncol(Human.HOM)], 
+                                                    "Human", sep = ".")
+    Hum.nd.Mouse <- merge(Mouse.ID, Human.HOM, all.x = T, 
+                          all.y = F, sort = FALSE)
+    dim(Hum.nd.Mouse)
+    Hum.nd.Mouse <- Hum.nd.Mouse[!is.na(Hum.nd.Mouse$Symbol.Human),  ]
+    dim(Hum.nd.Mouse)
+    Hum.nd.Mouse$Geneid <- Hum.nd.Mouse$Symbol.Mouse
+    length(universe)
+    geneList.HOM <- Hum.nd.Mouse$Symbol.Human[match(universe, Hum.nd.Mouse$Geneid)]
+    geneList.HOM <- unique(na.omit(geneList.HOM))
+    
+    length(geneList.HOM)
+    cat("\tFrom",length(unique(universe)),"initial genes,",length(geneList.HOM),"mapped to human homologues\n")
+    universe=geneList.HOM
 
   }
+  #Add data4tyers genes to gmt to calculate the proper Universe (bug in enricher function)
+  gmt <- rbind(gmt,data.frame("term" = rep("Data4Tyers",length(universe)), gene=universe))
+  
   enrichment = list()
   dir = resultsDir
-  #Add data4tyers genes to gmt to calculate the proper Universe (bug in enricher function)
-  gmt <- rbind(gmt,data.frame("term" = rep("Data4Tyers",length(data4Tyers$Geneid)), gene=data4Tyers$Geneid))
   for (i in 1:length(geneList)) {
     cat("Running enrichment",i,":",names(geneList)[i],"\n")
 
@@ -369,3 +392,4 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
     }
   }
 }
+
