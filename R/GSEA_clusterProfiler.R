@@ -25,7 +25,7 @@
 ##' @import clusterProfiler
 ##' @import openxlsx 
 GSEA.run <- function(data4Tyers,contrast,gmt,resultsDir=getwd(),specie="human",
-                     collection_name="",minGSSize = 15,maxGSSize = 500,pvalueCutoff=1,HOM_MouseHuman=""){
+                     collection_name="",minGSSize = 15,maxGSSize = 500,pvalueCutoff=1,HOM_MouseHuman="",cnetplot=F){
   
   require(clusterProfiler)
   require(openxlsx)
@@ -214,11 +214,13 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
         }
 
         # GSEA Gene-Concept networks (top 5 gene sets by default)
-        p=clusterProfiler::cnetplot(gsea.L[[j]], foldChange=gsea.L[[j]]@geneList,cex_label_gene = 0.5,
-                   cex_label_category = 0.7,cex_category = 0.7,layout = "kk",showCategory = 5)
-        p=p+ scale_color_gradient2(name = "-log(p.val)*signFC", low = "blue", mid = "white", high = "red")
-        ggsave(file.path(resultsDir, paste0("GSEA.",collection_name,".GeneConceptNetworks.", 
-                                            names(gsea.L)[j], ".png")), plot=p)
+        if(cnetplot==TRUE){
+          p=clusterProfiler::cnetplot(gsea.L[[j]], foldChange=gsea.L[[j]]@geneList,cex_label_gene = 0.5,
+                     cex_label_category = 0.7,cex_category = 0.7,layout = "kk",showCategory = 5)
+          p=p+ scale_color_gradient2(name = "-log(p.val)*signFC", low = "blue", mid = "white", high = "red")
+          ggsave(file.path(resultsDir, paste0("GSEA.",collection_name,".GeneConceptNetworks.", 
+                                              names(gsea.L)[j], ".png")), plot=p)
+        }
         # GSEA EnrichmentMAP (Jaccard index. Plot top 30 by default)
         if(nrow(gsea.L[[j]]@result)>1){
           pt=enrichplot::pairwise_termsim(gsea.L[[j]], method = "JC", semData = NULL, showCategory = 200)
