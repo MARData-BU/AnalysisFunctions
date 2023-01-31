@@ -25,7 +25,7 @@
 ##' @import clusterProfiler
 ##' @import openxlsx 
 GSEA.run <- function(data4Tyers,contrast,gmt,resultsDir=getwd(),specie="human",
-                     collection_name="",minGSSize = 15,maxGSSize = 500,pvalueCutoff=1,HOM_MouseHuman="",cnetplot=F){
+                     collection_name="",minGSSize = 15,maxGSSize = 500,pvalueCutoff=1,HOM_MouseHuman=""){
   
   require(clusterProfiler)
   require(openxlsx)
@@ -140,7 +140,7 @@ GSEA.run <- function(data4Tyers,contrast,gmt,resultsDir=getwd(),specie="human",
 ##' @import gridExtra
 ##' @import png 
 GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
-                       plot_top=10,p.adjust=0.05){
+                       plot_top=10,p.adjust=0.05,make_cnet=F){
   require(clusterProfiler)
   require(enrichplot)
   require(gridExtra)
@@ -214,7 +214,7 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
         }
 
         # GSEA Gene-Concept networks (top 5 gene sets by default)
-        if(cnetplot==TRUE){
+        if(make_cnet==TRUE){
           p=clusterProfiler::cnetplot(gsea.L[[j]], foldChange=gsea.L[[j]]@geneList,cex_label_gene = 0.5,
                      cex_label_category = 0.7,cex_category = 0.7,layout = "kk",showCategory = 5)
           p=p+ scale_color_gradient2(name = "-log(p.val)*signFC", low = "blue", mid = "white", high = "red")
