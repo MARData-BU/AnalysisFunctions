@@ -238,7 +238,7 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
 ##' @import clusterProfiler
 ##' @import openxlsx
 enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resultsDir = getwd(),
-                                translate_genes = FALSE,HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500,plot_top = 50, plot.p.adjust= 0.05) {
+                                translate_genes = FALSE,HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500,plot_top = 50, plot.p.adjust= 0.05,make.cnet=FALSE) {
   # If data4tyers and contrasts, will run per contrast and separate UP and DOWN
   # If genelist provided, will run for length(genelist)
   require(clusterProfiler)
@@ -357,12 +357,14 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
       ggsave(file.path(resultsDir, paste0("Enrichment.",
                                           collection_name, ".Dotplot.", names(enrichment)[i],
                                           ".png")), plot = p, width = 9, height = ifelse(nrow(enrichment[[i]]@result)>5,8,3))
-      p = clusterProfiler::cnetplot(enrichment[[i]],
-                                    cex_label_gene = 0.5, cex_label_category = 0.7,
-                                    cex_category = 0.7, layout = "kk", showCategory = 10)
-      ggsave(file.path(resultsDir, paste0("Enrichment.",
-                                          collection_name, ".GeneConceptNetworks.",
-                                          names(enrichment)[i], ".png")), plot = p, width = 9, height = 8)
+      if(make.cnet==TRUE){
+        p = clusterProfiler::cnetplot(enrichment[[i]],
+                                      cex_label_gene = 0.5, cex_label_category = 0.7,
+                                      cex_category = 0.7, layout = "kk", showCategory = 10)
+        ggsave(file.path(resultsDir, paste0("Enrichment.",
+                                            collection_name, ".GeneConceptNetworks.",
+                                            names(enrichment)[i], ".png")), plot = p, width = 9, height = 8)
+        }
       if (nrow(enrichment[[i]]@result) > 1) {
         pt = enrichplot::pairwise_termsim(enrichment[[i]],
                                           method = "JC", semData = NULL, showCategory = 200)
