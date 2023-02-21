@@ -149,10 +149,11 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
         if(nrow(enrichment[[i]][[j]]@result)!=0){ # If there are significant results; do plots
           enrichment[[i]][[j]]@result$Description=strtrim(enrichment[[i]][[j]]@result$Description, 70) # maximum label length
           p = clusterProfiler::dotplot(enrichment[[i]][[j]], showCategory = plot_top,
-                                       font.size = 8,
+                                       font.size = 8,label_format = 70,
                                        title = paste0("Top", plot_top," ",collection_name,
                                                       "\n enriched in ", names(enrichment[[i]])[j],
                                                       "\n p.adjust<", plot.p.adjust))
+          p=p+ theme(aspect.ratio=4/3)
 
           ggsave(file.path(resultsDir, paste0("Enrichment.",
                                               collection_name, ".Dotplot.", names(enrichment[[i]])[j],
@@ -167,8 +168,8 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
             pt = enrichplot::pairwise_termsim(enrichment[[i]][[j]],
                                               method = "JC", semData = NULL, showCategory = 200)
 
-            p <- clusterProfiler::emapplot(pt, cex_label_category = 0.5,
-                                           showCategory = 30)
+            p <- clusterProfiler::emapplot(pt, cex_label_category = 0.3,
+                                           showCategory = 30,cex_category=0.7)
             ggsave(file.path(resultsDir, paste0("Enrichment.",
                                                 collection_name, ".EnrichmentMAP.", names(enrichment[[i]])[j],
                                                 ".png")), plot = p, width = 9, height = ifelse(nrow(enrichment[[i]][[j]]@result)>5,8,3))
@@ -230,6 +231,7 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
 ##' @param maxGSSize maximal size of genes annotated for testing (Default 500)
 ##' @param plot_top maximum number of genesets to include in the dotplot
 ##' @param plot.p.adjust plot enrichment results below this adjusted pvalue cutoff (default 0.05)
+##' @param make.cnet create cnet networks (default FALSE)
 ##' @return Returns a list with enrichemnt results for each contrast. The list is saved as a RData object
 ##' in the resultsDir directory, along with a folder for each contrast containing an
 ##' excel file with enrichment results.
@@ -238,7 +240,8 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
 ##' @import clusterProfiler
 ##' @import openxlsx
 enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resultsDir = getwd(),
-                                translate_genes = FALSE,HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500,plot_top = 50, plot.p.adjust= 0.05,make.cnet=FALSE) {
+                                translate_genes = FALSE,HOM_MouseHuman = "",minGSSize = 15, maxGSSize = 500,plot_top = 50,
+                                plot.p.adjust= 0.05,make.cnet=FALSE) {
   # If data4tyers and contrasts, will run per contrast and separate UP and DOWN
   # If genelist provided, will run for length(genelist)
   require(clusterProfiler)
@@ -349,10 +352,11 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
     if(nrow(enrichment[[i]]@result)!=0){ # If there are significant results; do plots
       enrichment[[i]]@result$Description=strtrim(enrichment[[i]]@result$Description, 70) # maximum label length
       p = clusterProfiler::dotplot(enrichment[[i]], showCategory = plot_top,
-                                   font.size = 8,
+                                   font.size = 8,label_format = 70,
                                    title = paste0("Top", plot_top," ",collection_name,
                                                   "\n enriched in ", names(enrichment)[i],
                                                   "\n p.adjust<", plot.p.adjust))
+      p=p+ theme(aspect.ratio=4/3)
 
       ggsave(file.path(resultsDir, paste0("Enrichment.",
                                           collection_name, ".Dotplot.", names(enrichment)[i],
@@ -369,8 +373,8 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
         pt = enrichplot::pairwise_termsim(enrichment[[i]],
                                           method = "JC", semData = NULL, showCategory = 200)
 
-        p <- clusterProfiler::emapplot(pt, cex_label_category = 0.5,
-                                       showCategory = 30)
+        p <- clusterProfiler::emapplot(pt, cex_label_category = 0.3,
+                                       showCategory = 30,cex_category=0.7)
         ggsave(file.path(resultsDir, paste0("Enrichment.",
                                             collection_name, ".EnrichmentMAP.", names(enrichment)[i],
                                             ".png")), plot = p, width = 9, height = ifelse(nrow(enrichment[[i]]@result)>5,8,3))

@@ -130,6 +130,7 @@ GSEA.run <- function(data4Tyers,contrast,gmt,resultsDir=getwd(),specie="human",
 ##' @param resultsDir Character vector with output results directory. Default is working directory.
 ##' @param plot_top maximum number of GSEA plots (default 50 to return all results)
 ##' @param p.adjust adjusted pvalue cutoff (default 0.05). Gene sets with p.adjust 
+##' @param make.cnet create cnet networks (default FALSE)
 ##' below this threshold will be included in all plots, unless maximum for visualization is reached.
 ##' @return This function creates a folder for each contrast and generates barplots, 
 ##' dotplots, GSEA plots, gene-concept networks and enrichmentMAP for both phenotypes.
@@ -193,8 +194,11 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
       if(nrow(gsea.L[[j]]@result)!=0){ # If there are significant results; do plots
         # GSEA Dotplot
         gsea.L[[j]]@result$Description=strtrim(gsea.L[[j]]@result$Description, 70) # maximum label length
+      #  gsea.L[[j]]@result$ID=strtrim(gsea.L[[j]]@result$ID, 70) # maximum label length
         
-        p=clusterProfiler::dotplot(gsea.L[[j]], showCategory=40,font.size=8,title= paste0("Enriched in ",names(gsea.L)[j],"\n p.adjust<0.05"))
+        p=clusterProfiler::dotplot(gsea.L[[j]], showCategory=40,label_format = 70,
+                                   font.size=7,title= paste0("Enriched in ",names(gsea.L)[j],"\n p.adjust<0.05"))
+        p=p+ theme(aspect.ratio=4/3)
         
         ggsave(file.path(resultsDir, paste0("GSEA.",collection_name,".Dotplot.", names(gsea.L)[j],".png")),
                plot=p,width =9,height =7)
@@ -224,7 +228,7 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
         # GSEA EnrichmentMAP (Jaccard index. Plot top 30 by default)
         if(nrow(gsea.L[[j]]@result)>1){
           pt=enrichplot::pairwise_termsim(gsea.L[[j]], method = "JC", semData = NULL, showCategory = 200)
-          p <- clusterProfiler::emapplot(pt,cex_label_category = 0.5,showCategory = 30)
+          p <-clusterProfiler::emapplot(pt,cex_label_category = 0.3,showCategory = 30,cex_category=0.7)
           ggsave(file.path(resultsDir, paste0("GSEA.",collection_name,".EnrichmentMAP.", 
                                               names(gsea.L)[j], ".png")),plot=p)
         }else{png::writePNG(array(0, dim = c(1,1,4)), file.path(resultsDir, paste0("GSEA.",collection_name,".EnrichmentMAP.", 
