@@ -168,7 +168,7 @@ enrichment.data4tyers <-function (data4Tyers, contrast,gmt,collection_name = "",
             pt = enrichplot::pairwise_termsim(enrichment[[i]][[j]],
                                               method = "JC", semData = NULL, showCategory = 200)
 
-            p <- clusterProfiler::emapplot(pt, cex_label_category = 0.4,
+            p <- clusterProfiler::emapplot(pt, cex_label_category = 0.5,
                                            showCategory = 30,cex_category=0.7)
             ggsave(file.path(resultsDir, paste0("Enrichment.",
                                                 collection_name, ".EnrichmentMAP.", names(enrichment[[i]])[j],
@@ -373,7 +373,7 @@ enrichment.geneList <-function (geneList,gmt,universe,collection_name = "", resu
         pt = enrichplot::pairwise_termsim(enrichment[[i]],
                                           method = "JC", semData = NULL, showCategory = 200)
 
-        p <- clusterProfiler::emapplot(pt, cex_label_category = 0.4,
+        p <- clusterProfiler::emapplot(pt, cex_label_category = 0.5,
                                        showCategory = 30,cex_category=0.7)
         ggsave(file.path(resultsDir, paste0("Enrichment.",
                                             collection_name, ".EnrichmentMAP.", names(enrichment)[i],
