@@ -15,7 +15,8 @@ enrichment.geneList(
   minGSSize = 15,
   maxGSSize = 500,
   plot_top = 50,
-  plot.p.adjust = 0.05
+  plot.p.adjust = 0.05,
+  make.cnet = FALSE
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ following columns: HomoloGene.ID (common ID for homologues), Common.Organism.Nam
 \item{plot_top}{maximum number of genesets to include in the dotplot}
 
 \item{plot.p.adjust}{plot enrichment results below this adjusted pvalue cutoff (default 0.05)}
+
+\item{make.cnet}{create cnet networks (default FALSE)}
 }
 \value{
 Returns a list with enrichemnt results for each contrast. The list is saved as a RData object

@@ -10,7 +10,8 @@ GSEA.plots(
   collection_name = "",
   resultsDir = getwd(),
   plot_top = 10,
-  p.adjust = 0.05
+  p.adjust = 0.05,
+  make_cnet = F
 )
 }
 \arguments{
@@ -24,7 +25,9 @@ GSEA.plots(
 
 \item{plot_top}{maximum number of GSEA plots (default 50 to return all results)}
 
-\item{p.adjust}{adjusted pvalue cutoff (default 0.05). Gene sets with p.adjust 
+\item{p.adjust}{adjusted pvalue cutoff (default 0.05). Gene sets with p.adjust}
+
+\item{make.cnet}{create cnet networks (default FALSE)
 below this threshold will be included in all plots, unless maximum for visualization is reached.}
 }
 \value{

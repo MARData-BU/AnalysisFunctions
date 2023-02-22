@@ -201,7 +201,7 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
         p=p+ theme(aspect.ratio=4/3)
         
         ggsave(file.path(resultsDir, paste0("GSEA.",collection_name,".Dotplot.", names(gsea.L)[j],".png")),
-               plot=p,width =9,height =7)
+               plot=p,width =9,height =ifelse(nrow(gsea.L[[j]]@result)>5,8,3))
         
         # GSEA Running score
         p=list()
@@ -228,7 +228,7 @@ GSEA.plots <- function(gsea,contrast,collection_name="",resultsDir=getwd(),
         # GSEA EnrichmentMAP (Jaccard index. Plot top 30 by default)
         if(nrow(gsea.L[[j]]@result)>1){
           pt=enrichplot::pairwise_termsim(gsea.L[[j]], method = "JC", semData = NULL, showCategory = 200)
-          p <-clusterProfiler::emapplot(pt,cex_label_category = 0.3,showCategory = 30,cex_category=0.7)
+          p <-clusterProfiler::emapplot(pt,cex_label_category = 0.4,showCategory = 30,cex_category=0.7)
           ggsave(file.path(resultsDir, paste0("GSEA.",collection_name,".EnrichmentMAP.", 
                                               names(gsea.L)[j], ".png")),plot=p)
         }else{png::writePNG(array(0, dim = c(1,1,4)), file.path(resultsDir, paste0("GSEA.",collection_name,".EnrichmentMAP.", 
