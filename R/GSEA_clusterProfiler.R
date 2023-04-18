@@ -33,7 +33,7 @@ GSEA.run <- function(data4Tyers,contrast,gmt,resultsDir=getwd(),specie="human",
                               wrapText = TRUE) #textRotation=90
   # Transform species homologues to human Symbols
   if (specie!="human"){
-    #HOM_MouseHuman <- read.table(file="/bicoh/MARGenomics/annotationData/HOM_MouseHumanSequence.txt",sep="\t",stringsAsFactors = F, header=T)
+    HOM_MouseHuman <- read.table(file="/bicoh/MARGenomics/annotationData/HOM_MouseHumanSequence.txt",sep="\t",stringsAsFactors = F, header=T)
     # Divide human and mouse data
     Human.HOM <- HOM_MouseHuman[HOM_MouseHuman$Common.Organism.Name == "human",] #19124    13
     Mouse.HOM <- HOM_MouseHuman[HOM_MouseHuman$Common.Organism.Name == "mouse, laboratory",] #20943    13
