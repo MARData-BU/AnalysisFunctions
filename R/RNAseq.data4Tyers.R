@@ -8,6 +8,8 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
   #GOndKEGG: Annotation with GO and KEGG. Takes some time
   
   #Obtain contrasts with limma
+  if(length(contrast[[1]])==2){
+
   ConList <- vector("list", length(contrast)) 
   for (i in 1:length(contrast)) {
     ConList[[i]] <- topTable(fit.main,n=Inf,coef=i, adjust="fdr")[,c("logFC","P.Value","adj.P.Val")]
@@ -98,5 +100,87 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
     }
   ) 
 
-
 }
+
+if(length(contrast[[1]])==1){
+  ConList <- vector("list", length(contrast))
+  for (i in 1:length(contrast)) {
+    ConList[[i]] <- topTable(fit.main, n = Inf, coef = i+1, 
+                             adjust = "fdr")[, c("logFC", "P.Value", "adj.P.Val")]
+    ConList[[i]] <- ConList[[i]][order(rownames(ConList[[i]])), 
+    ]
+  }
+  est_noctrls_s <- expr.mat[order(rownames(expr.mat)), ]
+  est_centered <- est_noctrls_s - apply(est_noctrls_s, 1, 
+                                        mean)
+  est_scaled <- est_centered/apply(est_noctrls_s, 1, sd)
+  colnames(est_scaled) <- paste(colnames(est_scaled), "scaled", 
+                                sep = ".")
+  u.cond <- unique(cond)
+  mean.matrix <- matrix(data = NA, nrow = nrow(expr.mat), 
+                        ncol = length(u.cond))
+  for (ic in 1:length(u.cond)) {
+    uc <- u.cond[ic]
+    mean.matrix[, ic] <- apply(est_noctrls_s[, cond == uc], 
+                               1, mean)
+  }
+  colnames(mean.matrix) <- paste("mean", u.cond, sep = ".")
+  rownames(mean.matrix) <- rownames(est_noctrls_s)
+  FC.matrix <- matrix(data = NA, nrow = nrow(expr.mat), ncol = length(contrast))
+  col.FC.Names <- vector()
+  for (ic in 1:length(contrast)) {
+    FC.matrix[, ic] <- 2^abs(ConList[[ic]]$logFC) * sign(ConList[[ic]]$logFC)
+    col.FC.Names <- c(col.FC.Names, paste("FC", contrast[[ic]][1], sep = "."))
+  }
+  colnames(FC.matrix) <- col.FC.Names
+  topDiff.mat <- matrix(data = NA, nrow = nrow(expr.mat), 
+                        ncol = length(contrast) * 4)
+  col.topDiff.Names <- vector()
+  for (ic in 1:length(contrast)) {
+    icc <- 1 + (4 * (ic - 1))
+    cont.name <- paste(contrast[[ic]][1], sep = ".")
+    topDiff.mat[, icc] <- FC.matrix[, ic]
+    topDiff.mat[, icc + 1] <- ConList[[ic]][, 1]
+    topDiff.mat[, icc + 2] <- ConList[[ic]][, 2]
+    topDiff.mat[, icc + 3] <- ConList[[ic]][, 3]
+    col.topDiff.Names <- c(col.topDiff.Names, col.FC.Names[ic], 
+                           paste(colnames(ConList[[ic]]), cont.name, sep = "."))
+  }
+  colnames(topDiff.mat) <- col.topDiff.Names
+  if (GOndKEGG) {
+    if (specie == "human") {
+      annot.mat.complt <- Complete.Human.GO.nd.KEGG(annot.mat)
+    }
+    else if (specie == "mouse") {
+      annot.mat.complt <- Complete.Mouse.GO.nd.KEGG(annot.mat)
+    }
+  }
+  else {
+    annot.mat.complt <- annot.mat[match(rownames(est_scaled), 
+                                        annot.mat$Geneid), ]
+  }
+  a = all.equal(rownames(est_scaled), rownames(est_noctrls_s))
+  b = all.equal(rownames(est_scaled), rownames(ConList[[1]]))
+  c = all.equal(rownames(est_scaled), rownames(mean.matrix))
+  d = all.equal(rownames(est_scaled), annot.mat.complt$Geneid)
+  tryCatch(expr = {
+    a & b & c & d
+    message("All objects are in same order. data4Tyers successfully created!")
+    data4Tyers <- data.frame(est_scaled, annot.mat.complt, 
+                             topDiff.mat, mean.matrix, est_noctrls_s)
+    return(data4Tyers)
+  }, error = function(e) {
+    message("Something is not in the correct order. Plese check that all inputs have same length and Geneid:")
+    message("all.equal(rownames(est_scaled), rownames(est_noctrls_s): ", 
+            a)
+    message("all.equal(rownames(est_scaled), rownames(ConList[[1]])): ", 
+            b)
+    message("all.equal(rownames(est_scaled), rownames(mean.matrix)): ", 
+            c)
+    message("all.equal(rownames(est_scaled), annot.mat.complt$Geneid): ", 
+            d)
+  })
+}  
+}
+
+# 04/04/2024: included the option of making the Excel for contrast of length 1 (e.g: when one wants to test the effect of time over gene expression and the contrast list is "list(c("timepoint"))".
