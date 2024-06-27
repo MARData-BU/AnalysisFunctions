@@ -27,14 +27,13 @@ RNAseq.data4Tyers <- function(expr.mat, annot.mat, cond, fit.main, contrast, spe
   mean.matrix <- matrix(data= NA, nrow=nrow(expr.mat), ncol=length(u.cond))
   for (ic in 1:length(u.cond)) {
     uc <- u.cond[ic]
-    if(dim(est_noctrls_s[,cond==uc])[2]>1){
-      mean.matrix[,ic] <- apply(est_noctrls_s[,cond==uc],1,mean)
-    }
-    else if(is.null(dim(est_noctrls_s[,cond==uc])[2])){
+    if(is.null(dim(est_noctrls_s[,cond==uc])[2])){
       mean.matrix[,ic] <- est_noctrls_s[, cond == uc]
       message("There is a variable with an n=1. No mean could be calculated.")
     }
-        
+    else if(dim(est_noctrls_s[,cond==uc])[2]>1){
+      mean.matrix[,ic] <- apply(est_noctrls_s[,cond==uc],1,mean)
+    }        
   }
   colnames(mean.matrix) <- paste("mean",u.cond, sep=".")
   rownames(mean.matrix) <- rownames(est_noctrls_s)
